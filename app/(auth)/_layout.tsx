@@ -1,5 +1,4 @@
-import LoadingScreen from "@/components/Loading";
-import { TabBarIcon } from "@/components/navigation/TabBarIcon";
+import LoadingScreen from "@/components/LoadingScreen";
 import { Colors } from "@/constants/Colors";
 import { useAuth } from "@clerk/clerk-expo";
 import { Tabs, router } from "expo-router";
@@ -28,12 +27,12 @@ export default function _layout() {
         name="home"
         options={{
           title: "Home",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "home" : "home-outline"}
-              color={color}
-            />
-          ),
+          // tabBarIcon: ({ color, focused }) => (
+          //   <TabBarIcon
+          //     name={focused ? "home" : "home-outline"}
+          //     color={color}
+          //   />
+          // ),
         }}
       />
     </Tabs>

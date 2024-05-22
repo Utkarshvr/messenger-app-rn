@@ -1,10 +1,5 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Slot, Stack, useRouter, useSegments } from "expo-router";
+import { Stack, useRouter, useSegments } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
@@ -12,8 +7,8 @@ import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
-import LoadingScreen from "../components/Loading";
 import { NativeModules, Platform, StatusBar, View } from "react-native";
+import LoadingScreen from "@/components/LoadingScreen";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -89,16 +84,14 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <ClerkProvider
-        publishableKey={CLERK_PUBLISHABLE_KEY}
-        tokenCache={tokenCache}
-      >
-        <StatusBar backgroundColor={colorScheme === "dark" ? "#000" : "#fff"} />
-        <View style={{ marginTop: STATUSBAR_HEIGHT, flex: 1 }}>
-          <InitialLayout />
-        </View>
-      </ClerkProvider>
-    </ThemeProvider>
+    <ClerkProvider
+      publishableKey={CLERK_PUBLISHABLE_KEY}
+      tokenCache={tokenCache}
+    >
+      <StatusBar backgroundColor={colorScheme === "dark" ? "#000" : "#fff"} />
+      <View style={{ marginTop: STATUSBAR_HEIGHT, flex: 1 }}>
+        <InitialLayout />
+      </View>
+    </ClerkProvider>
   );
 }

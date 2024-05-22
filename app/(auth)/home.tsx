@@ -1,6 +1,4 @@
-import { StyleSheet, View } from "react-native";
-import React from "react";
-import { ThemedText } from "@/components/ThemedText";
+import { StyleSheet, Text, View } from "react-native";
 import { useUser } from "@clerk/clerk-expo";
 
 export default function home() {
@@ -8,8 +6,8 @@ export default function home() {
 
   return (
     <View>
-      <ThemedText type="subtitle">Home</ThemedText>
-      <ThemedText type="default">Hi, {user?.username}</ThemedText>
+      <Text>Home</Text>
+      <Text>Hi, {user?.username}</Text>
     </View>
   );
 }

@@ -1,7 +1,7 @@
-import { Slot, Stack, router } from "expo-router";
+import { Stack, router } from "expo-router";
 import React from "react";
-import LoadingScreen from "../../components/Loading";
 import { useAuth } from "@clerk/clerk-expo";
+import LoadingScreen from "@/components/LoadingScreen";
 
 export default function _layout() {
   const { isLoaded, isSignedIn } = useAuth();
