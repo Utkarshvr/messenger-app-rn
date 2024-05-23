@@ -1,8 +1,7 @@
 import * as React from "react";
 import {
-  Button,
+  ActivityIndicator,
   Image,
-  Pressable,
   Text,
   TextInput,
   TouchableOpacity,
@@ -11,6 +10,8 @@ import {
 import { useSignUp } from "@clerk/clerk-expo";
 import { router } from "expo-router";
 import colors from "tailwindcss/colors";
+import Backdrop from "@/components/Backdrop";
+import Modal from "@/components/modal/Modal";
 
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -18,9 +19,19 @@ export default function SignUpScreen() {
   const [username, setUsername] = React.useState("");
   const [emailAddress, setEmailAddress] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [isSigningUp, setIsSigningUp] = React.useState(false);
+
   const [pendingVerification, setPendingVerification] = React.useState(false);
   const [code, setCode] = React.useState("");
+  const [isVerifyingEmail, setIsVerifyingEmail] = React.useState(false);
 
+  const [error, setError] = React.useState<null | {
+    title: string;
+    text: string;
+    actions: { onPress: () => void; text: string }[];
+  }>(null);
+
+  const retrySignIn = () => setError(null);
   // start the sign up process.
   const onSignUpPress = async () => {
     if (!isLoaded) {
@@ -28,6 +39,7 @@ export default function SignUpScreen() {
     }
 
     try {
+      setIsSigningUp(true);
       await signUp.create({
         username,
         emailAddress,
@@ -40,7 +52,22 @@ export default function SignUpScreen() {
       // change the UI to our pending section.
       setPendingVerification(true);
     } catch (err: any) {
-      console.error(JSON.stringify(err, null, 2));
+      console.log(JSON.stringify(err, null, 2));
+
+      return setError({
+        title:
+          err.errors[0].code === "form_param_format_invalid"
+            ? `${err.errors[0].meta.paramName + " " + err.errors[0].message}`
+            : err.errors[0].code === "form_username_invalid_character"
+            ? `Username is invalid`
+            : err.errors[0].message === err.errors[0].longMessage
+            ? "Error"
+            : err.errors[0].message,
+        text: err.errors[0].longMessage,
+        actions: [{ onPress: retrySignIn, text: "Try Again" }],
+      });
+    } finally {
+      setIsSigningUp(false);
     }
   };
 
@@ -51,13 +78,24 @@ export default function SignUpScreen() {
     }
 
     try {
+      setIsVerifyingEmail(true);
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code,
       });
 
       await setActive({ session: completeSignUp.createdSessionId });
     } catch (err: any) {
-      console.error(JSON.stringify(err, null, 2));
+      console.log(JSON.stringify(err, null, 2));
+      return setError({
+        title:
+          err.errors[0].message === err.errors[0].longMessage
+            ? "Error"
+            : err.errors[0].message,
+        text: err.errors[0].longMessage,
+        actions: [{ onPress: retrySignIn, text: "Try Again" }],
+      });
+    } finally {
+      setIsVerifyingEmail(false);
     }
   };
 
@@ -79,7 +117,8 @@ export default function SignUpScreen() {
               className="text-base text-neutral-100 w-full bg-neutral-800 p-2 rounded-lg"
               placeholderTextColor={colors.neutral[400]}
               value={username}
-              placeholder="username"
+              placeholder="Username"
+              keyboardType="default"
               onChangeText={(username) => setUsername(username)}
             />
             <TextInput
@@ -87,14 +126,16 @@ export default function SignUpScreen() {
               placeholderTextColor={colors.neutral[400]}
               autoCapitalize="none"
               value={emailAddress}
-              placeholder="Email..."
+              placeholder="Email"
+              keyboardType="email-address"
               onChangeText={(email) => setEmailAddress(email)}
             />
             <TextInput
               value={password}
+              autoCapitalize="none"
               className="text-base text-neutral-100 w-full bg-neutral-800 p-2 rounded-lg"
               placeholderTextColor={colors.neutral[400]}
-              placeholder="Password..."
+              placeholder="Password"
               secureTextEntry={true}
               onChangeText={(password) => setPassword(password)}
             />
@@ -103,7 +144,11 @@ export default function SignUpScreen() {
               onPress={onSignUpPress}
               className="w-full bg-sky-600 p-2 rounded-lg items-center justify-center"
             >
-              <Text className="text-base text-white">Sign up</Text>
+              {isSigningUp ? (
+                <ActivityIndicator color={colors.neutral[100]} />
+              ) : (
+                <Text className="text-base text-white">Sign up</Text>
+              )}
             </TouchableOpacity>
             <View className="flex flex-row gap-1">
               <Text className="text-sm text-neutral-400">
@@ -121,30 +166,38 @@ export default function SignUpScreen() {
         )}
         {pendingVerification && (
           <View>
-            <View>
+            <View className="mb-2">
               <TextInput
                 value={code}
-                placeholder="Code..."
+                placeholder="Code"
+                keyboardType="number-pad"
                 className="text-base text-neutral-100 w-full bg-neutral-800 p-2 rounded-lg"
                 placeholderTextColor={colors.neutral[400]}
                 onChangeText={(code) => setCode(code)}
               />
             </View>
             <TouchableOpacity
-              onPress={onSignUpPress}
-              className="w-full bg-sky-600 p-2 rounded-lg items-center justify-center"
-            >
-              <Text className="text-base text-white">Sign up</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
               className="w-full bg-sky-600 p-2 rounded-lg items-center justify-center"
               onPress={onPressVerify}
             >
-              <Text className="text-base text-white">Verify Email</Text>
+              {isVerifyingEmail ? (
+                <ActivityIndicator color={colors.neutral[100]} />
+              ) : (
+                <Text className="text-base text-white">Verify Email</Text>
+              )}
             </TouchableOpacity>
           </View>
         )}
       </View>
+      {error && (
+        <Backdrop center>
+          <Modal
+            title={error.title}
+            text={error.text}
+            actions={error.actions}
+          />
+        </Backdrop>
+      )}
     </View>
   );
 }
