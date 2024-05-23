@@ -1,12 +1,19 @@
 import { Stack, router } from "expo-router";
-import React from "react";
 import { useAuth } from "@clerk/clerk-expo";
 import LoadingScreen from "@/components/LoadingScreen";
+import colors from "tailwindcss/colors";
+import { NativeModules, Platform, useColorScheme } from "react-native";
+
+const { StatusBarManager } = NativeModules;
+
+const STATUSBAR_HEIGHT = Platform.OS === "ios" ? 20 : StatusBarManager.HEIGHT;
 
 export default function _layout() {
   const { isLoaded, isSignedIn } = useAuth();
 
-  console.log({ isLoaded, isSignedIn });
+  const colorScheme = useColorScheme();
+  const bgColor =
+    colorScheme === "dark" ? colors.neutral[900] : colors.neutral[50];
 
   if (!isLoaded) return <LoadingScreen />;
 
@@ -15,5 +22,14 @@ export default function _layout() {
     return null;
   }
 
-  return <Stack />;
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        headerStyle: {
+          backgroundColor: bgColor,
+        },
+      }}
+    />
+  );
 }

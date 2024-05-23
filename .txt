@@ -1,0 +1,17 @@
+The app (auth screen) would have two Stack Screens (register & signin) which can be toggled by button.
+After authentication, the user would be moved to (auth layout) - with initial page as Home.
+
+- Auth Screen Layout: 
+# Floating Button (Friends)
+- On clicking this, a new modal screen will be shown for you to select a friend to chat with and also to search new people.
+
+# Header
+- App Name
+- Right Corner:
+1. Add New Friend button (f+): 
+- That button will take you to a new screen that is stacked above the previous one. 
+- Here u can search for new people by their username and send requests.
+- Also here u can see the requests you sent and recieved separately.
+- It will have a search bar on the very top, where if u start typing the (sent and recieved requests will hide) and (people with )
+
+- Home: Home Screen shows the previous chats.

@@ -1,13 +1,19 @@
+import colors from "tailwindcss/colors";
 import { useFonts } from "expo-font";
-import { Stack, useRouter, useSegments } from "expo-router";
+import { Slot, useRouter, useSegments } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
 
-import { useColorScheme } from "@/hooks/useColorScheme";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
-import { NativeModules, Platform, StatusBar, View } from "react-native";
+import {
+  NativeModules,
+  Platform,
+  StatusBar,
+  View,
+  useColorScheme,
+} from "react-native";
 import LoadingScreen from "@/components/LoadingScreen";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -32,10 +38,6 @@ const tokenCache = {
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 
-const { StatusBarManager } = NativeModules;
-
-const STATUSBAR_HEIGHT = Platform.OS === "ios" ? 20 : StatusBarManager.HEIGHT;
-
 const InitialLayout = () => {
   const { isLoaded, isSignedIn } = useAuth();
   const segments = useSegments();
@@ -46,7 +48,7 @@ const InitialLayout = () => {
 
     const inTabsGroup = segments[0] === "(auth)";
 
-    console.log("User changed: ", isSignedIn);
+    console.log("User Signedin: ", isSignedIn);
 
     if (isSignedIn && !inTabsGroup) {
       router.replace("/home");
@@ -55,20 +57,16 @@ const InitialLayout = () => {
     }
   }, [isSignedIn]);
 
-  if (!isLoaded) return <LoadingScreen />;
-
   return (
     <>
-      <Stack>
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
+      <Slot />
     </>
   );
 };
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+
   const [loaded] = useFonts({
     SpaceMono: require("../../assets/fonts/SpaceMono-Regular.ttf"),
   });
@@ -79,7 +77,7 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
-  if (!loaded) {
+  if (!colorScheme || !colors || !loaded) {
     return null;
   }
 
@@ -88,8 +86,12 @@ export default function RootLayout() {
       publishableKey={CLERK_PUBLISHABLE_KEY}
       tokenCache={tokenCache}
     >
-      <StatusBar backgroundColor={colorScheme === "dark" ? "#000" : "#fff"} />
-      <View style={{ marginTop: STATUSBAR_HEIGHT, flex: 1 }}>
+      <View style={{ flex: 1 }}>
+        <StatusBar
+          backgroundColor={
+            colorScheme === "dark" ? colors.neutral[950] : colors.neutral[100]
+          }
+        />
         <InitialLayout />
       </View>
     </ClerkProvider>

@@ -1,7 +1,16 @@
 import * as React from "react";
-import { Button, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Button,
+  Image,
+  Pressable,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useSignUp } from "@clerk/clerk-expo";
 import { router } from "expo-router";
+import colors from "tailwindcss/colors";
 
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -53,64 +62,89 @@ export default function SignUpScreen() {
   };
 
   return (
-    <View>
-      {!pendingVerification && (
-        <View>
-          <View>
+    <View className="flex-1 items-center justify-center bg-neutral-100 dark:bg-neutral-950">
+      <View className="w-full p-8">
+        <View className="flex flex-col gap-2 items-center justify-center mb-8">
+          <Image
+            source={require("../../../assets/images/messenger-logo.png")}
+            style={{ width: 104, height: 104 }}
+          />
+          <Text className="text-base text-neutral-300">Messenger</Text>
+        </View>
+
+        {!pendingVerification && (
+          <View className="flex flex-col gap-2 items-center justify-center">
             <TextInput
               autoCapitalize="none"
-              style={{ color: "#fff", fontSize: 16 }}
-              placeholderTextColor={"#eee"}
+              className="text-base text-neutral-100 w-full bg-neutral-800 p-2 rounded-lg"
+              placeholderTextColor={colors.neutral[400]}
               value={username}
               placeholder="username"
               onChangeText={(username) => setUsername(username)}
             />
-          </View>
-          <View>
             <TextInput
-              style={{ color: "#fff", fontSize: 16 }}
-              placeholderTextColor={"#eee"}
+              className="text-base text-neutral-100 w-full bg-neutral-800 p-2 rounded-lg"
+              placeholderTextColor={colors.neutral[400]}
               autoCapitalize="none"
               value={emailAddress}
               placeholder="Email..."
               onChangeText={(email) => setEmailAddress(email)}
             />
-          </View>
-
-          <View>
             <TextInput
               value={password}
-              style={{ color: "#fff", fontSize: 16 }}
-              placeholderTextColor={"#eee"}
+              className="text-base text-neutral-100 w-full bg-neutral-800 p-2 rounded-lg"
+              placeholderTextColor={colors.neutral[400]}
               placeholder="Password..."
               secureTextEntry={true}
               onChangeText={(password) => setPassword(password)}
             />
-          </View>
 
-          <Button onPress={onSignUpPress} title="Sign up" />
-          <Button
-            onPress={() => router.replace("/signin")}
-            title="Go To Sign In"
-          />
-        </View>
-      )}
-      {pendingVerification && (
-        <View>
-          <View>
-            <TextInput
-              value={code}
-              placeholder="Code..."
-              style={{ color: "#fff", fontSize: 16 }}
-              placeholderTextColor={"#eee"}
-              onChangeText={(code) => setCode(code)}
-            />
+            <TouchableOpacity
+              onPress={onSignUpPress}
+              className="w-full bg-sky-600 p-2 rounded-lg items-center justify-center"
+            >
+              <Text className="text-base text-white">Sign up</Text>
+            </TouchableOpacity>
+            <View className="flex flex-row gap-1">
+              <Text className="text-sm text-neutral-400">
+                Already have an account?
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  router.replace("/signin");
+                }}
+              >
+                <Text className="text-sm text-sky-300">Log in</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <TouchableOpacity onPress={onPressVerify}>
-            <Text>Verify Email</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+        )}
+        {pendingVerification && (
+          <View>
+            <View>
+              <TextInput
+                value={code}
+                placeholder="Code..."
+                className="text-base text-neutral-100 w-full bg-neutral-800 p-2 rounded-lg"
+                placeholderTextColor={colors.neutral[400]}
+                onChangeText={(code) => setCode(code)}
+              />
+            </View>
+            <TouchableOpacity
+              onPress={onSignUpPress}
+              className="w-full bg-sky-600 p-2 rounded-lg items-center justify-center"
+            >
+              <Text className="text-base text-white">Sign up</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="w-full bg-sky-600 p-2 rounded-lg items-center justify-center"
+              onPress={onPressVerify}
+            >
+              <Text className="text-base text-white">Verify Email</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
     </View>
   );
 }
