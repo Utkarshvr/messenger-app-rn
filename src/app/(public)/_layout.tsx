@@ -17,10 +17,10 @@ export default function _layout() {
 
   if (!isLoaded) return <LoadingScreen />;
 
-  if (isSignedIn) {
-    router.replace("/home");
-    return null;
-  }
+  // if (isSignedIn) {
+  //   router.replace("/home");
+  //   return null;
+  // }
 
   return (
     <Stack

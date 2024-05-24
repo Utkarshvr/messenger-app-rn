@@ -20,7 +20,7 @@ export default function _layout() {
   }
 
   const bgColor =
-    colorScheme === "dark" ? colors.neutral[900] : colors.neutral[50];
+    colorScheme === "dark" ? colors.neutral[950] : colors.neutral[50];
   const textColor =
     colorScheme === "light" ? colors.neutral[950] : colors.neutral[100];
 
@@ -35,6 +35,8 @@ export default function _layout() {
         },
         headerStyle: {
           backgroundColor: bgColor,
+          borderBottomWidth: 0,
+          elevation: 0,
         },
 
         headerTitleStyle: { color: textColor },

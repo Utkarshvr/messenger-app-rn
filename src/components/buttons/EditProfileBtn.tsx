@@ -6,7 +6,7 @@ import colors from "tailwindcss/colors";
 export default function EditBtn() {
   const colorScheme = useColorScheme();
   const onPress = () => {
-    router.push("/(others)/profile");
+    router.push("/(stack)/edit-profile");
   };
 
   return (

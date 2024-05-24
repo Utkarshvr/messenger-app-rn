@@ -6,9 +6,9 @@ import colors from "tailwindcss/colors";
 export default function layout() {
   const colorScheme = useColorScheme();
   const bgColor =
-    colorScheme === "dark" ? colors.neutral[900] : colors.neutral[50];
+    colorScheme === "dark" ? colors.neutral[950] : colors.neutral[50];
   const textColor =
-    colorScheme !== "dark" ? colors.neutral[900] : colors.neutral[50];
+    colorScheme !== "dark" ? colors.neutral[950] : colors.neutral[50];
 
   return (
     <Stack
@@ -25,9 +25,14 @@ export default function layout() {
       }}
     >
       <Stack.Screen
-        key={"profile"}
-        name="profile"
-        options={{ title: "Profile" }}
+        key={"edit-profile"}
+        name="edit-profile"
+        options={{ headerTitle: "Edit Profile" }}
+      />
+      <Stack.Screen
+        key={"(edit-profile)"}
+        name="(edit-profile)"
+        options={{ headerShown: false }}
       />
     </Stack>
   );

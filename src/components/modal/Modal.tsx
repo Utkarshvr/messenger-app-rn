@@ -33,6 +33,7 @@ export default function Modal({
       <View className="items-center justify-center">
         {actions.map((action) => (
           <TouchableHighlight
+            key={action.text}
             activeOpacity={0.6}
             underlayColor={colors.neutral[700]}
             className="w-full p-2 rounded-b-lg"
