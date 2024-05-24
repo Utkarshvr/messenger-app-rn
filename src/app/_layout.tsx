@@ -43,6 +43,11 @@ const InitialLayout = () => {
   const segments = useSegments();
   const router = useRouter();
 
+  // useEffect(() => {
+  //   // router.replace("/signin");
+  //   router.replace("/(auth)/home");
+  // }, []);
+
   useEffect(() => {
     if (!isLoaded) return;
 
@@ -56,6 +61,8 @@ const InitialLayout = () => {
       router.replace("/signin");
     }
   }, [isSignedIn]);
+
+  console.log("I am rendered");
 
   return (
     <>
