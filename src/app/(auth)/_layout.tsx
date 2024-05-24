@@ -6,6 +6,7 @@ import { Tabs, router } from "expo-router";
 import { TouchableOpacity, View, useColorScheme } from "react-native";
 import colors from "tailwindcss/colors";
 
+const hiddenTabs = ["(others)"];
 export default function _layout() {
   const { isLoaded, isSignedIn } = useAuth();
   const colorScheme = useColorScheme();
@@ -76,6 +77,18 @@ export default function _layout() {
           tabBarIcon: ({ focused }) => <UserAvatar focused={focused} />,
         }}
       />
+
+      {hiddenTabs.map((tab) => (
+        <Tabs.Screen
+          key={tab}
+          name={tab}
+          options={{
+            href: null,
+            // headerShown: false,
+            tabBarStyle: { display: "none" },
+          }}
+        />
+      ))}
     </Tabs>
   );
 }

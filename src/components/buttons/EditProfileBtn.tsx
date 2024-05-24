@@ -1,14 +1,12 @@
-import { useClerk } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { Text, TouchableOpacity, useColorScheme } from "react-native";
 import colors from "tailwindcss/colors";
 
-export default function LogoutBtn() {
-  const { signOut } = useClerk();
-
+export default function EditBtn() {
   const colorScheme = useColorScheme();
   const onPress = () => {
-    signOut();
+    router.push("/(others)/profile");
   };
 
   return (
@@ -17,15 +15,15 @@ export default function LogoutBtn() {
       onPress={onPress}
     >
       <Ionicons
-        name="log-out-outline"
-        size={20}
+        name="pencil-outline"
+        size={18}
         color={
           colorScheme === "dark" ? colors.neutral[100] : colors.neutral[950]
         }
         style={{ marginVertical: "auto" }}
       />
       <Text className="text-neutral-950 dark:text-neutral-100 text-base">
-        Logout
+        Edit Profile
       </Text>
     </TouchableOpacity>
   );
