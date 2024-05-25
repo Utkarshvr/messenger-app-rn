@@ -26,6 +26,7 @@ export default function EditEmailAddresses() {
   const [emailAddress, setEmailAddress] = useState("");
   const [isAddingEmail, setIsAddingEmail] = useState(false);
   const [isCreatingEmail, setIsCreatingEmail] = useState(false);
+  const [verificationTime, setVerificationTime] = useState(30);
   const [isEmailVerificationPending, setIsEmailVerificationPending] =
     useState(false);
   const [verificationEmail, setVerificationEmail] = useState("");
@@ -66,6 +67,24 @@ export default function EditEmailAddresses() {
         await data?.prepareVerification({ strategy: "email_code" });
         setIsEmailVerificationPending(true);
         setVerificationEmail(emailAddress);
+
+        setVerificationTime(30);
+
+        const intervalId = setInterval(() => {
+          setVerificationTime((prev) => {
+            if (prev > 0) {
+              return prev - 1;
+            } else {
+              clearInterval(intervalId); // Clear interval when time is 0
+              return prev;
+            }
+          });
+        }, 1000);
+
+        ToastAndroid.show(
+          `Verification Code is sent to ${emailAddress}`,
+          ToastAndroid.SHORT
+        );
       } catch (err: any) {
         console.log("::prepareVerification::", JSON.stringify(err, null, 2));
         return setError({
@@ -92,6 +111,32 @@ export default function EditEmailAddresses() {
     }
   };
 
+  async function resendVerificationCode() {
+    const selectedEmail = user?.emailAddresses.find(
+      (e) => e.emailAddress === verificationEmail
+    );
+
+    await selectedEmail?.prepareVerification({ strategy: "email_code" });
+
+    setVerificationTime(30);
+
+    const intervalId = setInterval(() => {
+      setVerificationTime((prev) => {
+        if (prev > 0) {
+          return prev - 1;
+        } else {
+          clearInterval(intervalId); // Clear interval when time is 0
+          return prev;
+        }
+      });
+    }, 1000);
+
+    ToastAndroid.show(
+      `Verification Code is resent to ${verificationEmail}`,
+      ToastAndroid.SHORT
+    );
+  }
+
   async function verifyCode() {
     try {
       setIsVerifyingCode(true);
@@ -112,6 +157,18 @@ export default function EditEmailAddresses() {
 
         // Reset many things
         setIsEmailVerificationPending(false);
+
+        const intervalId = setInterval(() => {
+          setVerificationTime((prev) => {
+            if (prev > 0) {
+              return prev - 1;
+            } else {
+              clearInterval(intervalId); // Clear interval when time is 0
+              return prev;
+            }
+          });
+        }, 1000);
+
         setIsAddingEmail(false);
 
         setEmailAddress("");
@@ -123,6 +180,8 @@ export default function EditEmailAddresses() {
         title:
           err.errors[0].message === err.errors[0].longMessage
             ? "Error"
+            : err.errors[0].message === "is incorrect"
+            ? `${err.errors[0].meta.paramName} ${err.errors[0].message}`
             : err.errors[0].message,
         text: err.errors[0].longMessage,
         actions: [{ onPress: closeModal, text: "Okay" }],
@@ -150,7 +209,7 @@ export default function EditEmailAddresses() {
       );
     }
   }, [user?.emailAddresses]);
-
+  console.log({ verificationTime, isEmailVerificationPending });
   return (
     <>
       <View className="flex-1 bg-neutral-100 dark:bg-neutral-950">
@@ -184,6 +243,7 @@ export default function EditEmailAddresses() {
                 setError={setError}
                 setIsEmailVerificationPending={setIsEmailVerificationPending}
                 setVerificationEmail={setVerificationEmail}
+                setVerificationTime={setVerificationTime}
               />
             </View>
           ))}
@@ -221,7 +281,7 @@ export default function EditEmailAddresses() {
                 Add email address
               </Text>
               <Text className="text-neutral-700 dark:text-neutral-400 text-xs">
-                An email containing a verification link will be sent to this
+                An email containing a verification code will be sent to this
                 email address.
               </Text>
             </View>
@@ -269,9 +329,31 @@ export default function EditEmailAddresses() {
 
         {isEmailVerificationPending && (
           <View className="p-4 gap-2">
-            <Text className="text-neutral-700 dark:text-neutral-400 text-xs">
-              A verification code has been sent to {verificationEmail}, check!
+            <Text className="text-neutral-700 dark:text-neutral-200 text-base font-medium">
+              Verify email address
             </Text>
+            <Text
+              className="text-neutral-700 dark:text-neutral-400 text-sm font-thin whitespace-normal"
+              style={{}}
+            >
+              Enter the verification code sent to {verificationEmail}
+            </Text>
+
+            <TouchableOpacity
+              onPress={resendVerificationCode}
+              disabled={verificationTime > 0}
+            >
+              <Text
+                className={`${
+                  verificationTime > 0
+                    ? "text-neutral-400 dark:text-neutral-700"
+                    : "text-neutral-700 dark:text-neutral-400"
+                } text-xs`}
+              >
+                Didn't receive a code? Resend ({verificationTime})
+              </Text>
+            </TouchableOpacity>
+
             <TextInput
               autoCapitalize="none"
               keyboardType="number-pad"

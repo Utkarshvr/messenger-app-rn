@@ -3,6 +3,7 @@ import { Entypo } from "@expo/vector-icons";
 import {
   ActivityIndicator,
   Text,
+  ToastAndroid,
   TouchableHighlight,
   View,
 } from "react-native";
@@ -20,6 +21,7 @@ export default function EmailEditMenu({
   setVerificationEmail,
   error,
   setError,
+  setVerificationTime,
 }: {
   email: EmailAddressResource;
   primaryEmailAddress: string;
@@ -29,6 +31,7 @@ export default function EmailEditMenu({
   closeMenu: () => void;
   setIsEmailVerificationPending: React.Dispatch<React.SetStateAction<boolean>>;
   setVerificationEmail: React.Dispatch<React.SetStateAction<string>>;
+  setVerificationTime: React.Dispatch<React.SetStateAction<number>>;
 
   error: {
     title: string;
@@ -106,6 +109,24 @@ export default function EmailEditMenu({
       await selectedEmail?.prepareVerification({ strategy: "email_code" });
       setIsEmailVerificationPending(true);
       setVerificationEmail(selectedEmail?.emailAddress || "");
+
+      setVerificationTime(30);
+
+      const intervalId = setInterval(() => {
+        setVerificationTime((prev) => {
+          if (prev > 0) {
+            return prev - 1;
+          } else {
+            clearInterval(intervalId); // Clear interval when time is 0
+            return prev;
+          }
+        });
+      }, 1000);
+
+      ToastAndroid.show(
+        `Verification Code is sent to ${selectedEmail?.emailAddress}`,
+        ToastAndroid.SHORT
+      );
     } catch (err: any) {
       console.log(JSON.stringify(err, null, 2));
       return setError({
