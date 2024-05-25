@@ -46,13 +46,9 @@ export default function _layout() {
 
         headerRight: ({ pressColor, pressOpacity, tintColor }) => {
           return (
-            <>
-              <View className="flex flex-row gap-2">
-                <TouchableOpacity>
-                  <Ionicons name={"person-add"} size={20} color={textColor} />
-                </TouchableOpacity>
-              </View>
-            </>
+            <TouchableOpacity onPress={() => router.push("/friend-requests")}>
+              <Ionicons name={"person-add"} size={20} color={textColor} />
+            </TouchableOpacity>
           );
         },
         headerRightContainerStyle: {
