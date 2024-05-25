@@ -1,10 +1,8 @@
 import {
-  Image,
   ScrollView,
   Text,
   TextInput,
   TouchableHighlight,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { useUser } from "@clerk/clerk-expo";
@@ -13,6 +11,7 @@ import { useEffect, useState } from "react";
 import { router } from "expo-router";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import Divider from "@/components/Divider";
+import EditProfileImg from "@/components/EditProfileImg";
 
 export default function EditProfile() {
   const { user } = useUser();
@@ -29,21 +28,7 @@ export default function EditProfile() {
 
   return (
     <ScrollView className="flex-1 bg-neutral-100 dark:bg-neutral-950">
-      <View className="flex gap-1 flex-col items-center justify-center p-3">
-        <Image
-          source={{ uri: user?.imageUrl }}
-          width={92}
-          height={92}
-          alt="Image"
-          style={{
-            borderWidth: 1,
-            borderRadius: 9999,
-          }}
-        />
-        <TouchableOpacity>
-          <Text className="text-sm text-sky-600">Edit picture</Text>
-        </TouchableOpacity>
-      </View>
+      <EditProfileImg />
       <View className="w-full gap-3 flex-col p-3">
         <View className="w-full flex-col">
           <Text className="text-xs text-neutral-400">Username</Text>

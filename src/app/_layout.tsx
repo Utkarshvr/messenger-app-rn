@@ -15,6 +15,7 @@ import {
   useColorScheme,
 } from "react-native";
 import LoadingScreen from "@/components/LoadingScreen";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -65,9 +66,9 @@ const InitialLayout = () => {
   console.log("I am rendered");
 
   return (
-    <>
+    <ActionSheetProvider>
       <Slot />
-    </>
+    </ActionSheetProvider>
   );
 };
 
