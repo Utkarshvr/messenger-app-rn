@@ -12,8 +12,17 @@ const AxiosInterceptor = ({ children }: { children: React.ReactNode }) => {
     const errorInterceptor = async (error: AxiosError) => {
       if (error?.response?.status === 403) {
         console.log("AXIOS_INTERCEPTOR_ERROR", error);
-        const token = await getToken();
-        axiosInstance.defaults.headers.common["Authorization"] = token;
+        const newToken = await getToken();
+        axiosInstance.defaults.headers.common["Authorization"] = newToken;
+
+        // Clone the original request
+        const originalRequest = error.config;
+        if (originalRequest) {
+          originalRequest.headers["Authorization"] = newToken;
+
+          // Retry the original request with the new token
+          return axiosInstance(originalRequest);
+        }
       }
 
       return Promise.reject(error);
