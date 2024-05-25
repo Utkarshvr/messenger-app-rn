@@ -16,7 +16,7 @@ import Backdrop from "@/components/Backdrop";
 export default function SignInScreen() {
   const { signIn, setActive, isLoaded } = useSignIn();
 
-  const [username, setUsername] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
@@ -36,7 +36,7 @@ export default function SignInScreen() {
     try {
       setIsLoggingIn(true);
       const completeSignIn = await signIn.create({
-        identifier: username,
+        identifier,
         password,
       });
       console.log({ completeSignIn });
@@ -45,16 +45,16 @@ export default function SignInScreen() {
       await setActive({ session: completeSignIn.createdSessionId });
     } catch (err: any) {
       console.log(JSON.stringify(err));
-      const isUsernameNotFound =
+      const isidentifierNotFound =
         err.errors[0].code === "form_identifier_not_found";
       const isFormFormatInvalid =
         err.errors[0].code === "form_param_format_invalid";
 
-      console.log({ isUsernameNotFound, code: err.errors[0].code });
-      if (isUsernameNotFound)
+      console.log({ isidentifierNotFound, code: err.errors[0].code });
+      if (isidentifierNotFound)
         return setError({
-          title: "Incorrect username",
-          text: "The username you entered doesn't appear to belong to an account. Please check your username and try again.",
+          title: "Incorrect email or username",
+          text: "The email or username you entered doesn't appear to belong to an account. Please check your identifier and try again.",
           actions: [{ onPress: retrySignIn, text: "Try Again" }],
         });
       else if (isFormFormatInvalid)
@@ -94,9 +94,9 @@ export default function SignInScreen() {
             keyboardType="default"
             className="text-base text-neutral-100 w-full bg-neutral-800 p-2 rounded-lg"
             placeholderTextColor={colors.neutral[400]}
-            value={username}
-            placeholder="Username"
-            onChangeText={(username) => setUsername(username)}
+            value={identifier}
+            placeholder="Email address or username"
+            onChangeText={(identifier) => setIdentifier(identifier)}
           />
           <TextInput
             value={password}
