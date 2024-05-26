@@ -1,4 +1,4 @@
-import AddFriendsBtn from "@/components/AddFriendsBtn";
+import AddFriendsBtn from "@/components/buttons/AddFriendsBtn";
 import LoadingScreen from "@/components/LoadingScreen";
 import UserAvatar from "@/components/UserAvatar";
 import { useAuth } from "@clerk/clerk-expo";

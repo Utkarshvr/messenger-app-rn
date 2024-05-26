@@ -119,19 +119,19 @@ export default function EditPassword() {
           {/* <Text className="text-xs text-neutral-400">Current Password</Text> */}
           <TextInput
             autoCapitalize="none"
-            keyboardType="default"
             className="text-base border-b border-neutral-200 text-neutral-100 w-full p-1 rounded-lg"
             placeholderTextColor={colors.neutral[400]}
             value={currentPassword || ""}
             placeholder="Current Password"
             onChangeText={(txt) => setCurrentPassword(txt)}
+            secureTextEntry={true}
           />
         </View>
         <View className="w-full flex-col">
           {/* <Text className="text-xs text-neutral-400">New Password</Text> */}
           <TextInput
             autoCapitalize="none"
-            keyboardType="default"
+            secureTextEntry={true}
             className="text-base border-b border-neutral-200 text-neutral-100 w-full p-1 rounded-lg"
             placeholderTextColor={colors.neutral[400]}
             value={newPassword || ""}
@@ -143,7 +143,7 @@ export default function EditPassword() {
           {/* <Text className="text-xs text-neutral-400">Confirm Password</Text> */}
           <TextInput
             autoCapitalize="none"
-            keyboardType="default"
+            secureTextEntry={true}
             className="text-base border-b border-neutral-200 text-neutral-100 w-full p-1 rounded-lg"
             placeholderTextColor={colors.neutral[400]}
             value={confirmPassword || ""}

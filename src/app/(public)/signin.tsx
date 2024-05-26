@@ -101,7 +101,6 @@ export default function SignInScreen() {
           <TextInput
             value={password}
             autoCapitalize="none"
-            keyboardType="email-address"
             placeholder="Password"
             className="text-base text-neutral-100 w-full bg-neutral-800 p-2 rounded-lg"
             placeholderTextColor={colors.neutral[400]}

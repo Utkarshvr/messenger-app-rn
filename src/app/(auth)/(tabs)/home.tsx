@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import { useUser } from "@clerk/clerk-expo";
-import OpenSheet from "@/components/OpenSheet";
+import FriendsFAB from "@/components/buttons/FriendsFAB";
 
 export default function home() {
   const { user, isLoaded } = useUser();
@@ -11,7 +11,8 @@ export default function home() {
       <Text className="text-neutral-950 dark:text-neutral-100">
         Hi, {user?.username}
       </Text>
-      <OpenSheet />
+
+      <FriendsFAB />
     </View>
   );
 }
