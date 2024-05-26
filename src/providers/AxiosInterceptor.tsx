@@ -10,7 +10,7 @@ const AxiosInterceptor = ({ children }: { children: React.ReactNode }) => {
     const fullfilledInterceptor = (response: AxiosResponse) => response;
 
     const errorInterceptor = async (error: AxiosError) => {
-      if (error?.response?.status === 403) {
+      if (error?.response?.status === 403 || error?.response?.status === 401) {
         console.log("AXIOS_INTERCEPTOR_ERROR", error);
         const newToken = await getToken();
         axiosInstance.defaults.headers.common["Authorization"] = newToken;

@@ -6,7 +6,7 @@ export default interface MongoFriendRequest {
   updatedAt: string;
   isSeenByReceiver: boolean;
   no_of_attempts: number;
-  recipient: string;
   sender: MongoUser;
+  recipient: MongoUser;
   status: "pending" | "accepted" | "rejected" | "unfriend";
 }

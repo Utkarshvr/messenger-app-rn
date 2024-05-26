@@ -6,7 +6,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -14,6 +13,7 @@ import {
   Image,
   ActivityIndicator,
   ToastAndroid,
+  FlatList,
 } from "react-native";
 import colors from "tailwindcss/colors";
 
@@ -21,6 +21,9 @@ export default function FriendRequestsScreen() {
   const [friendRequests, setFriendRequests] = useState<MongoFriendRequest[]>(
     []
   );
+  const [friendRequestsSent, setFriendRequestsSent] = useState<
+    MongoFriendRequest[]
+  >([]);
 
   const [error, setError] = useState<null | {
     title: string;
@@ -29,21 +32,53 @@ export default function FriendRequestsScreen() {
   }>(null);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const [isAcceptingReq, setIsAcceptingReq] = useState("");
   const [isRejectingReq, setIsRejectingReq] = useState("");
+  const [isCancellingReq, setIsCancellingReq] = useState("");
 
-  async function loadRequests() {
+  const [typeOfReqSelected, setTypeOfReqSelected] = useState<
+    "received" | "sent"
+  >("received");
+
+  const markReqsAsSeen = async () => {
     try {
-      setIsLoading(true);
-      const { data } = await axiosInstance.get(`/users/me/requests`);
-      console.log(data);
+      await axiosInstance.put("/friend-requests/seen");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-      setFriendRequests(data.receivedRequests || []);
+  async function loadSentRequests(isRefreshing = false) {
+    try {
+      if (!isRefreshing) setIsLoading(true);
+      setRefreshing(isRefreshing);
+      const { data } = await axiosInstance.get(`/users/me/requests?type=sent`);
+      console.log(data);
+      setFriendRequestsSent(data.requests || []);
     } catch (error) {
       console.log(error);
     } finally {
-      setIsLoading(true);
+      if (!isRefreshing) setIsLoading(false);
+      setRefreshing(false);
+    }
+  }
+
+  async function loadRequests(isRefreshing = false) {
+    try {
+      if (!isRefreshing) setIsLoading(true);
+      setRefreshing(isRefreshing);
+      const { data } = await axiosInstance.get(`/users/me/requests`);
+      console.log(data);
+      setFriendRequests(data.requests || []);
+
+      markReqsAsSeen();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      if (!isRefreshing) setIsLoading(false);
+      setRefreshing(false);
     }
   }
 
@@ -51,11 +86,10 @@ export default function FriendRequestsScreen() {
     try {
       setIsAcceptingReq(id);
       await axiosInstance.put(`/friend-requests/${id}/accept`);
-
       ToastAndroid.show("Friend request accepted", ToastAndroid.SHORT);
       loadRequests();
     } catch (err: any) {
-      return setError({
+      setError({
         title:
           err.errors[0].message === err.errors[0].longMessage
             ? "Error"
@@ -81,13 +115,140 @@ export default function FriendRequestsScreen() {
     }
   }
 
+  async function cancelReq(req_id: string) {
+    try {
+      setIsCancellingReq(req_id);
+      await axiosInstance.put(`/friend-requests/${req_id}/cancel`);
+      loadSentRequests();
+    } catch (err: any) {
+      console.log(err);
+      setError({
+        title:
+          err.errors[0].message === err.errors[0].longMessage
+            ? "Error"
+            : err.errors[0].message,
+        text: err.errors[0].longMessage,
+        actions: [{ onPress: () => setError(null), text: "Got it" }],
+      });
+    } finally {
+      setIsCancellingReq("");
+    }
+  }
+
   useEffect(() => {
-    loadRequests();
-  }, []);
+    if (typeOfReqSelected === "received") {
+      loadRequests();
+    } else loadSentRequests();
+  }, [typeOfReqSelected]);
+
+  const renderReceivedRequest = ({
+    item: fr,
+  }: {
+    item: MongoFriendRequest;
+  }) => (
+    <View key={fr._id} className="flex-row justify-between items-center">
+      <View className="gap-2 flex-row items-center">
+        <View className="relative">
+          <Image
+            source={{ uri: fr?.sender?.picture }}
+            className="rounded-full"
+            width={40}
+            height={40}
+            alt="user-picture"
+          />
+          {!fr.isSeenByReceiver && (
+            <View className="absolute top-0 right-0 bg-red-500 w-3 h-3 rounded-full" />
+          )}
+        </View>
+        <View>
+          <Text className="text-neutral-800 dark:text-neutral-100 text-base font-medium">
+            {fr.sender.username}
+          </Text>
+          <Text className="text-neutral-400 text-xs">
+            {
+              fr.sender.email_addresses.find(
+                (e) => e.id === fr.sender.primaryEmailID
+              )?.email_address
+            }
+          </Text>
+        </View>
+      </View>
+      <View className="flex-row gap-1">
+        <TouchableHighlight
+          className="rounded-full p-2 items-center justify-center"
+          activeOpacity={1}
+          underlayColor={colors.sky[900]}
+          onPress={() => acceptReq(fr._id)}
+        >
+          {isAcceptingReq === fr._id ? (
+            <ActivityIndicator color={colors.sky[500]} />
+          ) : (
+            <Ionicons
+              name="checkmark-sharp"
+              size={24}
+              color={colors.sky[600]}
+            />
+          )}
+        </TouchableHighlight>
+        <TouchableHighlight
+          className="rounded-full p-2 items-center justify-center"
+          activeOpacity={1}
+          underlayColor={colors.red[900]}
+          onPress={() => rejectReq(fr._id)}
+        >
+          {isRejectingReq === fr._id ? (
+            <ActivityIndicator color={colors.red[500]} />
+          ) : (
+            <Ionicons name="trash-outline" size={24} color={colors.red[500]} />
+          )}
+        </TouchableHighlight>
+      </View>
+    </View>
+  );
+
+  const renderSentRequest = ({ item: fr }: { item: MongoFriendRequest }) => (
+    <View key={fr._id} className="flex-row justify-between items-center">
+      <View className="gap-2 flex-row items-center">
+        <Image
+          source={{ uri: fr?.recipient?.picture }}
+          className="rounded-full"
+          width={40}
+          height={40}
+          alt="user-picture"
+        />
+        <View>
+          <Text className="text-neutral-800 dark:text-neutral-100 text-base font-medium">
+            {fr.recipient.username}
+          </Text>
+          <Text className="text-neutral-400 text-xs">
+            {
+              fr.recipient.email_addresses.find(
+                (e) => e.id === fr.recipient.primaryEmailID
+              )?.email_address
+            }
+          </Text>
+        </View>
+      </View>
+      <View className="flex-row gap-1">
+        <TouchableHighlight
+          className="rounded-lg px-4 py-2 items-center justify-center bg-neutral-700 mr-2"
+          activeOpacity={1}
+          underlayColor={colors.neutral[900]}
+          onPress={() => cancelReq(fr._id)}
+        >
+          {isCancellingReq ? (
+            <ActivityIndicator color={colors.white} />
+          ) : (
+            <Text className="text-neutral-100 font-bold">Cancel</Text>
+          )}
+        </TouchableHighlight>
+      </View>
+    </View>
+  );
 
   return (
     <>
-      <ScrollView className="flex-1 bg-neutral-100 dark:bg-neutral-950 p-4">
+      <View className="flex-1 bg-neutral-100 dark:bg-neutral-950 p-4">
         <View className="flex-row gap-2 mb-4">
           <TouchableHighlight
             className="w-fit px-4 py-2 flex-row items-center rounded-md bg-neutral-800"
@@ -108,83 +269,76 @@ export default function FriendRequestsScreen() {
             </View>
           </TouchableHighlight>
         </View>
-        <View className="gap-2">
+        <View className="flex-1 gap-2">
           <Text className="text-neutral-800 dark:text-neutral-200 text-base font-bold">
             Requests
           </Text>
-          <View className="gap-1">
-            {friendRequests.map((fr) => {
-              return (
-                <View
-                  key={fr._id}
-                  className="flex-row justify-between items-center"
-                >
-                  <View className="gap-2 flex-row items-center">
-                    <Image
-                      source={{ uri: fr?.sender?.picture }}
-                      className="rounded-full"
-                      width={40}
-                      height={40}
-                      alt="user-picture"
-                    />
-                    <View>
-                      <Text className="text-neutral-800 dark:text-neutral-100 text-base font-medium">
-                        {fr.sender.username}
-                      </Text>
-                      <Text className="text-neutral-400 text-xs">
-                        {
-                          fr.sender.email_addresses.find(
-                            (e) => e.id === fr.sender.primaryEmailID
-                          )?.email_address
-                        }
-                      </Text>
-                    </View>
+          <View className="flex-1">
+            <View className="flex-row gap-1 mb-4">
+              <TouchableHighlight
+                className={`rounded-lg px-4 py-2 items-center justify-center ${
+                  typeOfReqSelected === "received"
+                    ? "bg-neutral-700"
+                    : "bg-neutral-900"
+                } mr-2`}
+                activeOpacity={1}
+                underlayColor={colors.neutral[900]}
+                onPress={() => setTypeOfReqSelected("received")}
+              >
+                <Text className="text-neutral-100 font-bold">Received</Text>
+              </TouchableHighlight>
+              <TouchableHighlight
+                className={`rounded-lg px-4 py-2 items-center justify-center ${
+                  typeOfReqSelected === "sent"
+                    ? "bg-neutral-700"
+                    : "bg-neutral-900"
+                }`}
+                activeOpacity={1}
+                underlayColor={colors.neutral[900]}
+                onPress={() => setTypeOfReqSelected("sent")}
+              >
+                <Text className="text-neutral-100 font-bold">Sent</Text>
+              </TouchableHighlight>
+            </View>
+
+            {isLoading ? (
+              <ActivityIndicator size="large" color={colors.sky[600]} />
+            ) : typeOfReqSelected === "received" ? (
+              <FlatList
+                // className="flex-1"
+                data={friendRequests}
+                keyExtractor={(fr) => fr._id}
+                renderItem={renderReceivedRequest}
+                refreshing={refreshing}
+                onRefresh={() => loadRequests(true)}
+                ListEmptyComponent={
+                  <View className="flex-1 items-center justify-center">
+                    <Text className="text-neutral-400 text-sm">
+                      Nothing to show
+                    </Text>
                   </View>
-                  <View className="flex-row gap-1">
-                    <TouchableHighlight
-                      className="rounded-full p-2 items-center justify-center"
-                      activeOpacity={1}
-                      underlayColor={colors.sky[900]}
-                      onPress={() => acceptReq(fr._id)}
-                    >
-                      {isAcceptingReq === fr._id ? (
-                        <ActivityIndicator color={colors.sky[500]} />
-                      ) : (
-                        <Ionicons
-                          name="checkmark-sharp"
-                          size={24}
-                          color={colors.sky[600]}
-                        />
-                      )}
-                    </TouchableHighlight>
-                    <TouchableHighlight
-                      className="rounded-full p-2 items-center justify-center"
-                      activeOpacity={1}
-                      underlayColor={colors.red[900]}
-                      onPress={() => rejectReq(fr._id)}
-                    >
-                      {isRejectingReq === fr._id ? (
-                        <ActivityIndicator color={colors.red[500]} />
-                      ) : (
-                        <Ionicons
-                          name="trash-outline"
-                          size={24}
-                          color={colors.red[500]}
-                        />
-                      )}
-                    </TouchableHighlight>
+                }
+              />
+            ) : (
+              <FlatList
+                // className="flex-1"
+                data={friendRequestsSent}
+                keyExtractor={(fr) => fr._id}
+                renderItem={renderSentRequest}
+                refreshing={refreshing}
+                onRefresh={() => loadSentRequests(true)}
+                ListEmptyComponent={
+                  <View className="flex-1 items-center justify-center">
+                    <Text className="text-neutral-400 text-sm">
+                      Nothing to show
+                    </Text>
                   </View>
-                </View>
-              );
-            })}
-            {friendRequests.length === 0 && (
-              <Text className="text-neutral-300 text-sm">
-                No Friend Requests to show
-              </Text>
+                }
+              />
             )}
           </View>
         </View>
-      </ScrollView>
+      </View>
 
       {error && (
         <Backdrop center>

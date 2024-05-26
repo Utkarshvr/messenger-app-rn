@@ -1,9 +1,10 @@
+import AddFriendsBtn from "@/components/AddFriendsBtn";
 import LoadingScreen from "@/components/LoadingScreen";
 import UserAvatar from "@/components/UserAvatar";
 import { useAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs, router } from "expo-router";
-import { TouchableOpacity, View, useColorScheme } from "react-native";
+import { useColorScheme } from "react-native";
 import colors from "tailwindcss/colors";
 
 const hiddenTabs = ["(others)"];
@@ -44,12 +45,8 @@ export default function _layout() {
         tabBarActiveTintColor: textColor,
         tabBarLabelStyle: { display: "none" },
 
-        headerRight: ({ pressColor, pressOpacity, tintColor }) => {
-          return (
-            <TouchableOpacity onPress={() => router.push("/friend-requests")}>
-              <Ionicons name={"person-add"} size={20} color={textColor} />
-            </TouchableOpacity>
-          );
+        headerRight: () => {
+          return <AddFriendsBtn />;
         },
         headerRightContainerStyle: {
           paddingHorizontal: 12,

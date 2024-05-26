@@ -28,7 +28,7 @@ export default function AddFriendsScreen() {
   const [identifier, setIdentifier] = useState("");
 
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
-  const [allusers, setAllusers] = useState<MongoUser[]>([]);
+  const [suggestedUsers, setSuggestedUsers] = useState<MongoUser[]>([]);
   const [requestedUsers, setRequestedUsers] = useState<
     { user_id: string; req_id: string }[]
   >([]);
@@ -36,11 +36,11 @@ export default function AddFriendsScreen() {
   const [isSendingReq, setIsSendingReq] = useState(false);
   const [isCancellingReq, setIsCancellingReq] = useState(false);
 
-  async function loadAllUsers() {
+  async function loadsuggestedUsers() {
     try {
       setIsLoadingUsers(true);
-      const { data } = await axiosInstance.get("/users");
-      setAllusers(data.users);
+      const { data } = await axiosInstance.get("/users/suggested");
+      setSuggestedUsers(data.users);
     } catch (error) {
       console.log(error);
     } finally {
@@ -54,7 +54,7 @@ export default function AddFriendsScreen() {
       const { data } = await axiosInstance.post(`/friend-requests/${id}`);
       setRequestedUsers((prev) => [
         ...prev,
-        { user_id: id, req_id: data.request._id },
+        { user_id: id, req_id: data.request?._id },
       ]);
       ToastAndroid.show("Friend request sent", ToastAndroid.SHORT);
     } catch (err: any) {
@@ -95,12 +95,12 @@ export default function AddFriendsScreen() {
   }
 
   useEffect(() => {
-    loadAllUsers();
+    loadsuggestedUsers();
   }, []);
 
   return (
     <>
-      <ScrollView className="flex-1 bg-neutral-100 dark:bg-neutral-950 p-4">
+      <View className="flex-1 bg-neutral-100 dark:bg-neutral-950 p-4">
         <View className="w-full gap-2 mb-4">
           <Text className="text-neutral-800 dark:text-neutral-200 text-base font-bold">
             Add Friends
@@ -123,7 +123,7 @@ export default function AddFriendsScreen() {
               Suggestions
             </Text>
 
-            {allusers.map((user) => (
+            {suggestedUsers.map((user) => (
               <View
                 key={user._id}
                 className="flex-row justify-between items-center"
@@ -195,7 +195,7 @@ export default function AddFriendsScreen() {
             ))}
           </View>
         </View>
-      </ScrollView>
+      </View>
 
       {error && (
         <Backdrop center>

@@ -64,8 +64,6 @@ const InitialLayout = () => {
     }
   }, [isSignedIn]);
 
-  console.log("I am rendered");
-
   return (
     <AxiosInterceptor>
       <ActionSheetProvider>
