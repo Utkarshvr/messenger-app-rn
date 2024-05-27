@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "@/config/axiosInstance";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { Text, TouchableOpacity, View, useColorScheme } from "react-native";
+import { TouchableOpacity, View, useColorScheme } from "react-native";
 import colors from "tailwindcss/colors";
+import TextBadge from "../TextBadge";
 
 export default function AddFriendsBtn() {
   const colorScheme = useColorScheme();
@@ -42,10 +43,11 @@ export default function AddFriendsBtn() {
         <Ionicons name={"person-add"} size={20} color={textColor} />
       </TouchableOpacity>
       {unseenReqsCount > 0 && (
-        <View className="absolute top-0 right-0 bg-red-500 w-4 h-4 rounded-full items-center justify-center">
-          <Text className="m-auto text-xs font-bold text-white">
-            {unseenReqsCount}
-          </Text>
+        <View className="absolute top-0 right-0">
+          <TextBadge
+            color={colors.red[600]}
+            text={unseenReqsCount?.toString()}
+          />
         </View>
       )}
     </View>

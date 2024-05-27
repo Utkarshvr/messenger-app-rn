@@ -1,5 +1,5 @@
-import ChatsScreen from "@/Screens/(auth)/(tabs)/ChatsScreen";
+import ConversationsScreen from "@/Screens/(auth)/(tabs)/ConversationsScreen";
 
 export default function home() {
-  return <ChatsScreen />;
+  return <ConversationsScreen />;
 }

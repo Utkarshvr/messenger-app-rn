@@ -21,6 +21,7 @@ export default function FriendsList() {
     []
   );
   const [isRemovingFriend, setIsRemovingFriend] = useState("");
+  const [isCreatingConvo, setIsCreatingConvo] = useState("");
 
   async function getFriendsList(isRefreshing = false) {
     try {
@@ -47,6 +48,20 @@ export default function FriendsList() {
       console.log(err);
     } finally {
       setIsRemovingFriend("");
+    }
+  }
+
+  async function createConversation(userID: string) {
+    try {
+      setIsCreatingConvo(userID);
+      const { data } = await axiosInstance.post(`/conversations`, { userID });
+      console.log({ data });
+      const convID = data.conversation?._id;
+      router.push(`/conversation/${convID}`);
+    } catch (err: any) {
+      console.log(err);
+    } finally {
+      setIsCreatingConvo("");
     }
   }
 
@@ -89,11 +104,15 @@ export default function FriendsList() {
             className={`rounded-lg p-2 items-center justify-center bg-neutral-800`}
             activeOpacity={1}
             underlayColor={colors.neutral[900]}
-            onPress={() => router.push(`/chat/${fr?.friend?._id}`)}
+            onPress={() => createConversation(fr?.friend?._id)}
           >
-            <Text className="text-neutral-800 dark:text-neutral-100 text-sm font-bold">
-              Chat
-            </Text>
+            {isCreatingConvo === fr?.friend?._id ? (
+              <ActivityIndicator color={colors.neutral[100]} />
+            ) : (
+              <Text className="text-neutral-800 dark:text-neutral-100 text-sm font-bold">
+                Chat
+              </Text>
+            )}
           </TouchableHighlight>
           <TouchableHighlight
             className={`rounded-lg p-2 items-center justify-center ${

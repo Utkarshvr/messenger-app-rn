@@ -31,3 +31,13 @@ export function SortEmailAddresses(
 
   return sortedEmails;
 }
+
+export function formatDateEnGB(dateStr: string) {
+  const date = new Date(dateStr);
+
+  return new Intl.DateTimeFormat("en-GB", {
+    year: "2-digit",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+}
