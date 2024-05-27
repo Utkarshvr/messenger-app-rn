@@ -41,3 +41,58 @@ export function formatDateEnGB(dateStr: string) {
     day: "2-digit",
   }).format(date);
 }
+
+export function formatMsgDate(inputDate: Date) {
+  // Get today's date
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Get yesterday's date
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  // Format the input date
+  if (inputDate.toDateString() === today.toDateString()) {
+    return (
+      "Today, " +
+      inputDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    );
+  } else if (inputDate.toDateString() === yesterday.toDateString()) {
+    return (
+      "Yesterday, " +
+      inputDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    );
+  } else if (
+    inputDate >=
+    new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() - today.getDay()
+    )
+  ) {
+    return (
+      inputDate.toLocaleDateString("en-US", { weekday: "short" }) +
+      ", " +
+      inputDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    );
+  } else if (inputDate.getFullYear() === today.getFullYear()) {
+    return (
+      inputDate.toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+      }) +
+      ", " +
+      inputDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    );
+  } else {
+    return (
+      inputDate.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+      }) +
+      ", " +
+      inputDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    );
+  }
+}

@@ -22,7 +22,7 @@ export default function ConversationItem({
         : conversation.lastMessage?.image
         ? "Sent a image"
         : ""
-      : "This message is deleted";
+      : "The last message is deleted";
 
     return (
       <TouchableHighlight
@@ -62,7 +62,9 @@ export default function ConversationItem({
                 unseenMsgCount > 0 ? "text-sky-600" : "text-neutral-500"
               } text-xs font-medium`}
             >
-              {formatDateEnGB(conversation.lastMessage.createdAt.toString())}
+              {conversation.lastMessagedAt
+                ? formatDateEnGB(conversation.lastMessagedAt.toString())
+                : null}
             </Text>
             {unseenMsgCount > 0 && (
               <TextBadge

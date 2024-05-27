@@ -5,11 +5,13 @@ export default interface MongoMessage {
   _id: string;
   createdAt: Date;
   updatedAt: Date;
+  
+  isSelf:boolean;
 
-  sender: string | MongoUser;
-  viewers: string[] | MongoUser[];
+  sender: MongoUser;
+  viewers: MongoUser[];
   body: string;
   image: string;
-
-  conversation: string | MongoConversation;
+  
+  conversation: MongoConversation;
 }
