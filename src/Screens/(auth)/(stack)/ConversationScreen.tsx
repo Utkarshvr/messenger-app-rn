@@ -74,7 +74,7 @@ export default function ConversationScreen() {
       });
   }, [navigation, conversation]);
 
-  console.log({ messages });
+  // console.log({ messages });
 
   return (
     <View className="flex-1 bg-neutral-100 dark:bg-neutral-950 pt-4">

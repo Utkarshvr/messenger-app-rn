@@ -1,5 +1,6 @@
 import LoadingScreen from "@/components/LoadingScreen";
 import axiosInstance from "@/config/axiosInstance";
+import { initiatePusher } from "@/lib/pusher";
 import { useAuth } from "@clerk/clerk-expo";
 import { Stack } from "expo-router";
 import { useEffect } from "react";
@@ -18,6 +19,10 @@ export default function RootLayout() {
           console.log(error);
         }
       })();
+
+      initiatePusher()
+        .then(() => console.log("Pusher is connected"))
+        .catch((err) => console.log("Pusher Error", err));
     }
   }, [isLoaded, isSignedIn, getToken]);
 

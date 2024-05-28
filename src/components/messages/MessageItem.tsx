@@ -49,12 +49,12 @@ export default function MessageItem({
 
   const deleteMsg = async () => {
     try {
-      setMessages((prev) => prev.filter((msg) => msg._id !== message._id));
+      // setMessages((prev) => prev.filter((msg) => msg._id !== message._id));
 
       setIsDeletingMsg(true);
       await axiosInstance.delete(`/messages/${message._id}`);
     } catch (error) {
-      setMessages((prev) => [...prev, message]);
+      // setMessages((prev) => [...prev, message]);
 
       console.log(error);
     } finally {

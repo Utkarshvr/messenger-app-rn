@@ -26,25 +26,25 @@ export default function MsgForm({
   const sendMsg = async () => {
     const uuid = Crypto.randomUUID();
     try {
-      setMessages((prev) => [
-        ...prev,
-        {
-          _id: uuid,
-          body: text,
-          isSelf: true,
-          viewers: [user?.id || ""],
-          image: "",
-          conversation: conversationID,
-          sender: user?.id || "",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ]);
-      setText("");
+      // setMessages((prev) => [
+      //   ...prev,
+      //   {
+      //     _id: uuid,
+      //     body: text,
+      //     isSelf: true,
+      //     viewers: [user?.id || ""],
+      //     image: "",
+      //     conversation: conversationID,
+      //     sender: user?.id || "",
+      //     createdAt: new Date(),
+      //     updatedAt: new Date(),
+      //   },
+      // ]);
       await axiosInstance.post(`/messages/${conversationID}`, { body: text });
+      setText("");
       console.log("Message sent succesfully!🥳🥳🥳🥳");
     } catch (error) {
-      setMessages((prev) => prev.filter((m) => m._id !== uuid));
+      // setMessages((prev) => prev.filter((m) => m._id !== uuid));
       console.log(error);
     }
   };
