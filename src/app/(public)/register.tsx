@@ -107,14 +107,16 @@ export default function SignUpScreen() {
             source={require("../../../assets/images/messenger-logo.png")}
             style={{ width: 104, height: 104 }}
           />
-          <Text className="text-base text-neutral-300">Messenger</Text>
+          <Text className="text-base text-neutral-500 dark:text-neutral-300">
+            Messenger
+          </Text>
         </View>
 
         {!pendingVerification && (
           <View className="flex flex-col gap-2 items-center justify-center">
             <TextInput
               autoCapitalize="none"
-              className="text-base text-neutral-100 w-full bg-neutral-800 p-2 rounded-lg"
+              className="text-base text-neutral-800 w-full bg-neutral-200 dark:bg-neutral-800 p-2 rounded-lg"
               placeholderTextColor={colors.neutral[400]}
               value={username}
               placeholder="Username"
@@ -122,7 +124,7 @@ export default function SignUpScreen() {
               onChangeText={(username) => setUsername(username)}
             />
             <TextInput
-              className="text-base text-neutral-100 w-full bg-neutral-800 p-2 rounded-lg"
+              className="text-base text-neutral-800 w-full bg-neutral-200 dark:bg-neutral-800 p-2 rounded-lg"
               placeholderTextColor={colors.neutral[400]}
               autoCapitalize="none"
               value={emailAddress}
@@ -133,7 +135,7 @@ export default function SignUpScreen() {
             <TextInput
               value={password}
               autoCapitalize="none"
-              className="text-base text-neutral-100 w-full bg-neutral-800 p-2 rounded-lg"
+              className="text-base text-neutral-800 w-full bg-neutral-200 dark:bg-neutral-800 p-2 rounded-lg"
               placeholderTextColor={colors.neutral[400]}
               placeholder="Password"
               secureTextEntry={true}
@@ -151,7 +153,7 @@ export default function SignUpScreen() {
               )}
             </TouchableOpacity>
             <View className="flex flex-row gap-1">
-              <Text className="text-sm text-neutral-400">
+              <Text className="text-sm text-neutral-500 dark:text-neutral-400">
                 Already have an account?
               </Text>
               <TouchableOpacity
@@ -159,7 +161,7 @@ export default function SignUpScreen() {
                   router.replace("/signin");
                 }}
               >
-                <Text className="text-sm text-sky-300">Log in</Text>
+                <Text className="text-sm text-sky-600">Log in</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -171,7 +173,7 @@ export default function SignUpScreen() {
                 value={code}
                 placeholder="Code"
                 keyboardType="number-pad"
-                className="text-base text-neutral-100 w-full bg-neutral-800 p-2 rounded-lg"
+                className="text-base text-neutral-800 w-full bg-neutral-200 dark:bg-neutral-800 p-2 rounded-lg"
                 placeholderTextColor={colors.neutral[400]}
                 onChangeText={(code) => setCode(code)}
               />

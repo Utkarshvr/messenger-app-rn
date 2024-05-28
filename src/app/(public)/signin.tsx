@@ -85,14 +85,16 @@ export default function SignInScreen() {
             source={require("../../../assets/images/messenger-logo.png")}
             style={{ width: 104, height: 104 }}
           />
-          <Text className="text-base text-neutral-300">Messenger</Text>
+          <Text className="text-base text-neutral-500 dark:text-neutral-300">
+            Messenger
+          </Text>
         </View>
 
         <View className="flex flex-col gap-2 items-center justify-center">
           <TextInput
             autoCapitalize="none"
             keyboardType="default"
-            className="text-base text-neutral-100 w-full bg-neutral-800 p-2 rounded-lg"
+            className="text-base text-neutral-100 w-full bg-neutral-200 dark:bg-neutral-800 p-2 rounded-lg"
             placeholderTextColor={colors.neutral[400]}
             value={identifier}
             placeholder="Email address or username"
@@ -102,7 +104,7 @@ export default function SignInScreen() {
             value={password}
             autoCapitalize="none"
             placeholder="Password"
-            className="text-base text-neutral-100 w-full bg-neutral-800 p-2 rounded-lg"
+            className="text-base text-neutral-100 w-full bg-neutral-200 dark:bg-neutral-800 p-2 rounded-lg"
             placeholderTextColor={colors.neutral[400]}
             secureTextEntry={true}
             onChangeText={(password) => setPassword(password)}
@@ -119,7 +121,7 @@ export default function SignInScreen() {
             )}
           </TouchableOpacity>
           <View className="flex flex-row gap-1">
-            <Text className="text-sm text-neutral-400">
+            <Text className="text-sm text-neutral-500 dark:text-neutral-400">
               Don't have an account?
             </Text>
             <TouchableOpacity
@@ -127,7 +129,7 @@ export default function SignInScreen() {
                 router.replace("/register");
               }}
             >
-              <Text className="text-sm text-sky-300">Sign up</Text>
+              <Text className="text-sm text-sky-600">Sign up</Text>
             </TouchableOpacity>
           </View>
         </View>
