@@ -18,7 +18,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { formatMsgDate } from "@/utility/helpers";
 import axiosInstance from "@/config/axiosInstance";
 
-export default function MessageItem({ message }: { message: MongoMessage }) {
+export default function MessageItem({
+  message,
+  setMessages,
+}: {
+  message: MongoMessage;
+  setMessages: React.Dispatch<React.SetStateAction<MongoMessage[]>>;
+}) {
   const isSelf = message.isSelf;
   const [showMenu, setShowMenu] = useState(false);
   const [componentHeight, setComponentHeight] = useState(0);
@@ -43,9 +49,13 @@ export default function MessageItem({ message }: { message: MongoMessage }) {
 
   const deleteMsg = async () => {
     try {
+      setMessages((prev) => prev.filter((msg) => msg._id !== message._id));
+
       setIsDeletingMsg(true);
       await axiosInstance.delete(`/messages/${message._id}`);
     } catch (error) {
+      setMessages((prev) => [...prev, message]);
+
       console.log(error);
     } finally {
       setIsDeletingMsg(false);

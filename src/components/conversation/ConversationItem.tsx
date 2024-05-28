@@ -6,6 +6,8 @@ import { Image, Text, TouchableHighlight, View } from "react-native";
 import colors from "tailwindcss/colors";
 import TextBadge from "../TextBadge";
 import { formatDateEnGB } from "@/utility/helpers";
+import { Ionicons } from "@expo/vector-icons";
+import { useUser } from "@clerk/clerk-expo";
 
 export default function ConversationItem({
   conversation,
@@ -13,6 +15,7 @@ export default function ConversationItem({
   conversation: MongoConversation;
 }) {
   if (conversation) {
+    const { user } = useUser();
     const otherUsers = useOtherUsers(conversation);
     const unseenMsgCount = useUnseenMsgCount(conversation._id);
 
@@ -24,6 +27,11 @@ export default function ConversationItem({
         : ""
       : "The last message is deleted";
 
+    const isLastMsgMine = conversation.lastMessage.sender === user?.id;
+    const hasOtherUserSeen =
+      isLastMsgMine &&
+      conversation.lastMessage.viewers.some((v) => v === otherUsers[0]?._id);
+    console.log({ hasOtherUserSeen });
     return (
       <TouchableHighlight
         activeOpacity={1}
@@ -44,16 +52,32 @@ export default function ConversationItem({
               )}
             </View>
             <View>
-              <Text className="text-neutral-800 dark:text-neutral-100 text-base font-medium">
-                {otherUsers[0].username}
-              </Text>
               <Text
                 className={`${
-                  unseenMsgCount > 0 ? "text-neutral-200" : "text-neutral-500"
-                } text-xs font-medium`}
+                  unseenMsgCount === 0
+                    ? "text-neutral-600 dark:text-neutral-300"
+                    : "text-neutral-800 dark:text-neutral-100"
+                } text-base font-medium`}
               >
-                {lastMsg}
+                {otherUsers[0].username}
               </Text>
+              <View className="flex-row gap-1 items-center">
+                {isLastMsgMine && hasOtherUserSeen && (
+                  <Ionicons
+                    name="checkmark-circle-outline"
+                    size={14}
+                    color={colors.neutral[300]}
+                  />
+                )}
+                <Text
+                  className={`${
+                    unseenMsgCount > 0 ? "text-neutral-200" : "text-neutral-300"
+                  } text-sm font-medium`}
+                  numberOfLines={1}
+                >
+                  {lastMsg}
+                </Text>
+              </View>
             </View>
           </View>
           <View className="flex-col gap-1 items-end justify-start">

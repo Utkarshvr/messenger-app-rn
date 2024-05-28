@@ -20,7 +20,7 @@ export default function ConversationScreen() {
 
   const { conversation, isLoading } = useConversation(conversationID);
   const otherUsers = useOtherUsers(conversation);
-  const { messages } = useMessages(conversationID);
+  const { messages, setMessages } = useMessages(conversationID);
 
   useEffect(() => {
     if (conversation)
@@ -79,9 +79,13 @@ export default function ConversationScreen() {
   return (
     <View className="flex-1 bg-neutral-100 dark:bg-neutral-950 pt-4">
       <View className="flex-1 px-4">
-        <Messages messages={messages} conversationID={conversationID} />
+        <Messages
+          messages={messages}
+          conversationID={conversationID}
+          setMessages={setMessages}
+        />
       </View>
-      <MsgForm />
+      <MsgForm setMessages={setMessages} conversationID={conversationID} />
     </View>
   );
 }

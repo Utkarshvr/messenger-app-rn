@@ -7,9 +7,11 @@ import axiosInstance from "@/config/axiosInstance";
 export default function Messages({
   messages,
   conversationID,
+  setMessages,
 }: {
   messages: MongoMessage[];
   conversationID: string;
+  setMessages: React.Dispatch<React.SetStateAction<MongoMessage[]>>;
 }) {
   useEffect(() => {
     (async () => {
@@ -29,7 +31,7 @@ export default function Messages({
       }}
     >
       {messages.map((message) => (
-        <MessageItem key={message._id} message={message} />
+        <MessageItem key={message._id} message={message} setMessages={setMessages} />
       ))}
     </ScrollView>
   );

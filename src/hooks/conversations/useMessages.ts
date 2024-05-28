@@ -27,5 +27,5 @@ export default function useMessages(conversationID: string) {
     loadMessages();
   }, []);
 
-  return { messages, isLoading, error };
+  return { messages, isLoading, error, setMessages };
 }
