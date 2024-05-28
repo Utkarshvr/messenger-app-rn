@@ -10,6 +10,7 @@ export default function useUnseenMsgCount(conversationID: string) {
       const { data } = await axiosInstance.get(
         `/conversations/${conversationID}/unseen-msg-count`
       );
+      console.log({ count: data.count });
       setMsgCount(data.count || 0);
     } catch (err: any) {
       console.log(err);

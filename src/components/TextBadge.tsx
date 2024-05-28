@@ -9,7 +9,7 @@ export default function TextBadge({
 }) {
   return (
     <View
-      className="w-4 h-4 rounded-full items-center justify-center"
+      className="w-6 h-6 rounded-full items-center justify-center"
       style={{ backgroundColor: color }}
     >
       <Text className="m-auto text-xs font-bold text-white">{text}</Text>

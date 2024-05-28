@@ -2,7 +2,13 @@ import useOtherUsers from "@/hooks/conversations/useOtherUsers";
 import useUnseenMsgCount from "@/hooks/conversations/useUnseenMsgCount";
 import MongoConversation from "@/types/mongo/MongoConversation";
 import { router } from "expo-router";
-import { Image, Text, TouchableHighlight, View } from "react-native";
+import {
+  Image,
+  Text,
+  TouchableHighlight,
+  View,
+  useColorScheme,
+} from "react-native";
 import colors from "tailwindcss/colors";
 import TextBadge from "../TextBadge";
 import { formatDateEnGB } from "@/utility/helpers";
@@ -16,6 +22,7 @@ export default function ConversationItem({
 }) {
   if (conversation) {
     const { user } = useUser();
+    const colorScheme = useColorScheme();
     const otherUsers = useOtherUsers(conversation);
     const unseenMsgCount = useUnseenMsgCount(conversation._id);
 
@@ -35,7 +42,9 @@ export default function ConversationItem({
     return (
       <TouchableHighlight
         activeOpacity={1}
-        underlayColor={colors.neutral[800]}
+        underlayColor={
+          colorScheme === "dark" ? colors.neutral[800] : colors.neutral[200]
+        }
         onPress={() => router.push(`/conversation/${conversation._id}`)}
       >
         <View className={`flex-row p-2 py-4 items-center justify-between`}>
@@ -55,7 +64,7 @@ export default function ConversationItem({
               <Text
                 className={`${
                   unseenMsgCount === 0
-                    ? "text-neutral-600 dark:text-neutral-300"
+                    ? "text-neutral-600 dark:text-neutral-400"
                     : "text-neutral-800 dark:text-neutral-100"
                 } text-base font-medium`}
               >
@@ -71,7 +80,9 @@ export default function ConversationItem({
                 )}
                 <Text
                   className={`${
-                    unseenMsgCount > 0 ? "text-neutral-200" : "text-neutral-300"
+                    unseenMsgCount > 0
+                      ? "text-neutral-800 dark:text-neutral-100"
+                      : "text-neutral-600 dark:text-neutral-400"
                   } text-sm font-medium`}
                   numberOfLines={1}
                 >
