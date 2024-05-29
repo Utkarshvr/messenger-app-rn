@@ -106,7 +106,7 @@ export default function AddFriendsScreen() {
             Add Friends
           </Text>
 
-          <View className="mb-4">
+          {/* <View className="mb-4">
             <TextInput
               autoCapitalize="none"
               className="text-base text-neutral-900 dark:text-neutral-100 w-full bg-neutral-300 dark:bg-neutral-800 py-2 px-4 rounded-3xl"
@@ -116,7 +116,7 @@ export default function AddFriendsScreen() {
               keyboardType="default"
               onChangeText={(identifier) => setIdentifier(identifier)}
             />
-          </View>
+          </View> */}
 
           <View className="">
             <Text className="mb-2 text-neutral-800 dark:text-neutral-200 text-base font-bold">
