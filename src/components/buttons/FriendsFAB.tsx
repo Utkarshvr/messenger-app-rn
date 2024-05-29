@@ -1,12 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { TouchableOpacity, useColorScheme } from "react-native";
+import { TouchableOpacity } from "react-native";
 import colors from "tailwindcss/colors";
 
 export default function FriendsFAB() {
-  const colorScheme = useColorScheme();
-  const textColor =
-    colorScheme === "light" ? colors.neutral[950] : colors.neutral[100];
+  const textColor = colors.neutral[100];
 
   return (
     <TouchableOpacity
