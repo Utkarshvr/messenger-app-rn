@@ -109,7 +109,7 @@ export default function AddFriendsScreen() {
           <View className="mb-4">
             <TextInput
               autoCapitalize="none"
-              className="text-base text-neutral-100 w-full bg-neutral-800 py-2 px-4 rounded-3xl"
+              className="text-base text-neutral-900 dark:text-neutral-100 w-full bg-neutral-300 dark:bg-neutral-800 py-2 px-4 rounded-3xl"
               placeholderTextColor={colors.neutral[300]}
               value={identifier}
               placeholder="Search"

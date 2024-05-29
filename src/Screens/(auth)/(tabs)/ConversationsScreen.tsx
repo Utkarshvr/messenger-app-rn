@@ -73,6 +73,10 @@ export default function ConversationsScreen() {
                 );
 
                 break;
+              case "conversation:new":
+                const newConv = JSON.parse(event.data);
+                setConversationList((prev) => [newConv, ...prev]);
+                break;
               default:
                 break;
             }

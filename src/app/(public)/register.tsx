@@ -116,7 +116,7 @@ export default function SignUpScreen() {
           <View className="flex flex-col gap-2 items-center justify-center">
             <TextInput
               autoCapitalize="none"
-              className="text-base text-neutral-800 w-full bg-neutral-200 dark:bg-neutral-800 p-2 rounded-lg"
+              className="text-base text-neutral-900 dark:text-neutral-100 w-full bg-neutral-200 dark:bg-neutral-800 p-2 rounded-lg"
               placeholderTextColor={colors.neutral[400]}
               value={username}
               placeholder="Username"
@@ -124,7 +124,7 @@ export default function SignUpScreen() {
               onChangeText={(username) => setUsername(username)}
             />
             <TextInput
-              className="text-base text-neutral-800 w-full bg-neutral-200 dark:bg-neutral-800 p-2 rounded-lg"
+              className="text-base text-neutral-900 dark:text-neutral-100 w-full bg-neutral-200 dark:bg-neutral-800 p-2 rounded-lg"
               placeholderTextColor={colors.neutral[400]}
               autoCapitalize="none"
               value={emailAddress}
@@ -135,7 +135,7 @@ export default function SignUpScreen() {
             <TextInput
               value={password}
               autoCapitalize="none"
-              className="text-base text-neutral-800 w-full bg-neutral-200 dark:bg-neutral-800 p-2 rounded-lg"
+              className="text-base text-neutral-900 dark:text-neutral-100 w-full bg-neutral-200 dark:bg-neutral-800 p-2 rounded-lg"
               placeholderTextColor={colors.neutral[400]}
               placeholder="Password"
               secureTextEntry={true}
@@ -173,7 +173,7 @@ export default function SignUpScreen() {
                 value={code}
                 placeholder="Code"
                 keyboardType="number-pad"
-                className="text-base text-neutral-800 w-full bg-neutral-200 dark:bg-neutral-800 p-2 rounded-lg"
+                className="text-base text-neutral-900 dark:text-neutral-100 w-full bg-neutral-200 dark:bg-neutral-800 p-2 rounded-lg"
                 placeholderTextColor={colors.neutral[400]}
                 onChangeText={(code) => setCode(code)}
               />

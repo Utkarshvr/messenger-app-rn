@@ -76,7 +76,7 @@ export default function FriendsList() {
   }) {
     return (
       <View className="flex-row justify-between items-center">
-        <View className="gap-2 flex-row items-center">
+        <View className="gap-2 flex-[0.75] flex-row items-center">
           <View className="relative">
             <Image
               source={{ uri: fr?.friend?.picture }}
@@ -86,11 +86,14 @@ export default function FriendsList() {
               alt="fr-picture"
             />
           </View>
-          <View>
-            <Text className="text-neutral-800 dark:text-neutral-100 text-base font-medium">
+          <View >
+            <Text
+              numberOfLines={1}
+              className="text-neutral-800 dark:text-neutral-100 text-base font-medium"
+            >
               {fr?.friend?.username}
             </Text>
-            <Text className="text-neutral-400 text-xs">
+            <Text numberOfLines={1} className="text-neutral-400 text-xs">
               {
                 fr?.friend?.email_addresses.find(
                   (e) => e.id === fr?.friend?.primaryEmailID
@@ -101,7 +104,7 @@ export default function FriendsList() {
         </View>
         <View className="flex-row gap-1">
           <TouchableHighlight
-            className={`rounded-lg p-2 items-center justify-center bg-neutral-800`}
+            className={`rounded-lg p-2 items-center justify-center bg-neutral-200 dark:bg-neutral-800`}
             activeOpacity={1}
             underlayColor={colors.neutral[900]}
             onPress={() => createConversation(fr?.friend?._id)}
@@ -126,9 +129,7 @@ export default function FriendsList() {
             {isRemovingFriend === fr?.friend?._id ? (
               <ActivityIndicator color={colors.neutral[100]} />
             ) : (
-              <Text className="text-neutral-800 dark:text-neutral-100 text-sm font-bold">
-                Remove
-              </Text>
+              <Text className="text-neutral-100 text-sm font-bold">Remove</Text>
             )}
           </TouchableHighlight>
         </View>

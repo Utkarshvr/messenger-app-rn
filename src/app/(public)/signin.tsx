@@ -94,7 +94,7 @@ export default function SignInScreen() {
           <TextInput
             autoCapitalize="none"
             keyboardType="default"
-            className="text-base text-neutral-100 w-full bg-neutral-200 dark:bg-neutral-800 p-2 rounded-lg"
+            className="text-base text-neutral-900 dark:text-neutral-100 w-full bg-neutral-200 dark:bg-neutral-800 p-2 rounded-lg"
             placeholderTextColor={colors.neutral[400]}
             value={identifier}
             placeholder="Email address or username"
@@ -104,7 +104,7 @@ export default function SignInScreen() {
             value={password}
             autoCapitalize="none"
             placeholder="Password"
-            className="text-base text-neutral-100 w-full bg-neutral-200 dark:bg-neutral-800 p-2 rounded-lg"
+            className="text-base text-neutral-900 dark:text-neutral-100 w-full bg-neutral-200 dark:bg-neutral-800 p-2 rounded-lg"
             placeholderTextColor={colors.neutral[400]}
             secureTextEntry={true}
             onChangeText={(password) => setPassword(password)}

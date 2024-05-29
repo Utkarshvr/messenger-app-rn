@@ -14,6 +14,7 @@ import {
   ActivityIndicator,
   ToastAndroid,
   FlatList,
+  useColorScheme,
 } from "react-native";
 import colors from "tailwindcss/colors";
 
@@ -24,6 +25,7 @@ export default function FriendRequestsScreen() {
   const [friendRequestsSent, setFriendRequestsSent] = useState<
     MongoFriendRequest[]
   >([]);
+  const theme = useColorScheme();
 
   const [error, setError] = useState<null | {
     title: string;
@@ -251,7 +253,7 @@ export default function FriendRequestsScreen() {
       <View className="flex-1 bg-neutral-100 dark:bg-neutral-950 p-4">
         <View className="flex-row gap-2 mb-4">
           <TouchableHighlight
-            className="w-fit px-4 py-2 flex-row items-center rounded-md bg-neutral-800"
+            className="w-fit px-4 py-2 flex-row items-center rounded-md bg-neutral-200 dark:bg-neutral-800"
             activeOpacity={0.6}
             underlayColor={colors.neutral[800]}
             onPress={() => router.push("/add-friends")}
@@ -261,9 +263,11 @@ export default function FriendRequestsScreen() {
                 className="mt-auto w-fit"
                 name="person-add-outline"
                 size={16}
-                color={colors.neutral[100]}
+                color={
+                  theme === "dark" ? colors.neutral[100] : colors.neutral[900]
+                }
               />
-              <Text className="text-neutral-800 dark:text-neutral-200 text-sm font-bold">
+              <Text className="text-neutral-900 dark:text-neutral-100 text-sm font-bold">
                 Add Friends
               </Text>
             </View>
@@ -278,23 +282,27 @@ export default function FriendRequestsScreen() {
               <TouchableHighlight
                 className={`rounded-lg px-4 py-2 items-center justify-center ${
                   typeOfReqSelected === "received"
-                    ? "bg-neutral-700"
-                    : "bg-neutral-900"
+                    ? "bg-neutral-400 dark:bg-neutral-700"
+                    : "bg-neutral-300 dark:bg-neutral-900"
                 } mr-2`}
                 activeOpacity={1}
-                underlayColor={colors.neutral[900]}
+                underlayColor={
+                  theme === "dark" ? colors.neutral[900] : colors.neutral[500]
+                }
                 onPress={() => setTypeOfReqSelected("received")}
               >
                 <Text className="text-neutral-100 font-bold">Received</Text>
               </TouchableHighlight>
               <TouchableHighlight
                 className={`rounded-lg px-4 py-2 items-center justify-center ${
-                  typeOfReqSelected === "sent"
-                    ? "bg-neutral-700"
-                    : "bg-neutral-900"
+                  typeOfReqSelected === "received"
+                    ? "bg-neutral-300 dark:bg-neutral-900"
+                    : "bg-neutral-400 dark:bg-neutral-700"
                 }`}
                 activeOpacity={1}
-                underlayColor={colors.neutral[900]}
+                underlayColor={
+                  theme === "dark" ? colors.neutral[900] : colors.neutral[500]
+                }
                 onPress={() => setTypeOfReqSelected("sent")}
               >
                 <Text className="text-neutral-100 font-bold">Sent</Text>
