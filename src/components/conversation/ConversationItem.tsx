@@ -183,7 +183,7 @@ export default function ConversationItem({
         onLongPress={handleLongPress}
       >
         <View className={`flex-row p-2 py-4 items-center justify-between`}>
-          <View className="gap-2 flex-row items-center">
+          <View className="gap-2 flex-row items-center flex-[0.8]">
             <View className="relative">
               {!conversation.isGroup && (
                 <Image
