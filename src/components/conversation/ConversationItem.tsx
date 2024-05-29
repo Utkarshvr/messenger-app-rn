@@ -14,19 +14,23 @@ import TextBadge from "../TextBadge";
 import { formatDateEnGB, formatMsgDate } from "@/utility/helpers";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { useUser } from "@clerk/clerk-expo";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import pusher from "@/lib/pusher";
 import { PusherEvent } from "@pusher/pusher-websocket-react-native";
 import MongoUser from "@/types/mongo/MongoUser";
+import Backdrop from "../Backdrop";
+import ConvOptionsModal from "../modal/ConvOptionsModal";
 
 export default function ConversationItem({
   conversation,
   setConversationList,
+  setShowOptionsModal,
 }: {
   conversation: MongoConversation;
   setConversationList: React.Dispatch<
     React.SetStateAction<MongoConversation[]>
   >;
+  setShowOptionsModal: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const { user } = useUser();
   const colorScheme = useColorScheme();
@@ -50,19 +54,6 @@ export default function ConversationItem({
   const isLastMsgMine =
     conversation.lastMessage?.sender === user?.id ||
     (conversation.lastMessage?.sender as MongoUser)._id === user?.id;
-
-  console.log(
-    JSON.stringify(
-      {
-        isLastMsgMine,
-        CONV_LAST_MESSAGE: conversation.lastMessage,
-        otherUser: otherUsers[0]?._id,
-        me: user?.id,
-      },
-      null,
-      2
-    )
-  );
 
   const hasOtherUserSeen =
     isLastMsgMine &&
@@ -174,98 +165,105 @@ export default function ConversationItem({
     // };
   }, [conversationID]);
 
+  const handleLongPress = () => {
+    setShowOptionsModal(conversationID);
+  };
+
   return (
-    <TouchableHighlight
-      activeOpacity={1}
-      underlayColor={
-        colorScheme === "dark" ? colors.neutral[800] : colors.neutral[200]
-      }
-      onPress={() => {
-        setMsgCount(0);
-        router.push(`/conversation/${conversation._id}`);
-      }}
-    >
-      <View className={`flex-row p-2 py-4 items-center justify-between`}>
-        <View className="gap-2 flex-row items-center">
-          <View className="relative">
-            {!conversation.isGroup && (
-              <Image
-                source={{ uri: otherUsers[0].picture }}
-                className="rounded-full"
-                width={40}
-                height={40}
-                alt="user-pic"
+    <>
+      <TouchableHighlight
+        activeOpacity={1}
+        underlayColor={
+          colorScheme === "dark" ? colors.neutral[800] : colors.neutral[200]
+        }
+        onPress={() => {
+          setMsgCount(0);
+          router.push(`/conversation/${conversation._id}`);
+        }}
+        onLongPress={handleLongPress}
+      >
+        <View className={`flex-row p-2 py-4 items-center justify-between`}>
+          <View className="gap-2 flex-row items-center">
+            <View className="relative">
+              {!conversation.isGroup && (
+                <Image
+                  source={{ uri: otherUsers[0].picture }}
+                  className="rounded-full"
+                  width={40}
+                  height={40}
+                  alt="user-pic"
+                />
+              )}
+            </View>
+            <View>
+              <Text
+                className={`${
+                  unseenMsgCount === 0
+                    ? "text-neutral-600 dark:text-neutral-400"
+                    : "text-neutral-800 dark:text-neutral-100"
+                } text-base font-medium`}
+              >
+                {otherUsers[0].username}
+              </Text>
+              <View className="flex-row gap-1 items-center">
+                {isLastMsgMine ? (
+                  hasOtherUserSeen ? (
+                    <Ionicons
+                      name="checkmark-circle-outline"
+                      size={14}
+                      color={
+                        colorScheme === "dark"
+                          ? colors.neutral[400]
+                          : colors.neutral[600]
+                      }
+                    />
+                  ) : (
+                    <Entypo
+                      name="circle"
+                      size={14}
+                      color={
+                        colorScheme === "dark"
+                          ? colors.neutral[400]
+                          : colors.neutral[600]
+                      }
+                    />
+                  )
+                ) : null}
+                <Text
+                  className={`${
+                    unseenMsgCount > 0
+                      ? "text-neutral-800 dark:text-neutral-100"
+                      : "text-neutral-600 dark:text-neutral-400"
+                  } text-sm font-medium`}
+                  numberOfLines={1}
+                >
+                  {lastMsg}
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View className="flex-col gap-1 items-end justify-start">
+            <Text
+              className={`${
+                unseenMsgCount > 0 ? "text-sky-600" : "text-neutral-500"
+              } text-xs font-medium`}
+            >
+              {conversation.lastMessagedAt
+                ? formatMsgDate(
+                    conversation.lastMessagedAt &&
+                      new Date(conversation.lastMessagedAt)
+                  )
+                : null}
+            </Text>
+            {unseenMsgCount > 0 && (
+              <TextBadge
+                color={colors.sky[600]}
+                text={unseenMsgCount?.toString()}
               />
             )}
           </View>
-          <View>
-            <Text
-              className={`${
-                unseenMsgCount === 0
-                  ? "text-neutral-600 dark:text-neutral-400"
-                  : "text-neutral-800 dark:text-neutral-100"
-              } text-base font-medium`}
-            >
-              {otherUsers[0].username}
-            </Text>
-            <View className="flex-row gap-1 items-center">
-              {isLastMsgMine ? (
-                hasOtherUserSeen ? (
-                  <Ionicons
-                    name="checkmark-circle-outline"
-                    size={14}
-                    color={
-                      colorScheme === "dark"
-                        ? colors.neutral[400]
-                        : colors.neutral[600]
-                    }
-                  />
-                ) : (
-                  <Entypo
-                    name="circle"
-                    size={14}
-                    color={
-                      colorScheme === "dark"
-                        ? colors.neutral[400]
-                        : colors.neutral[600]
-                    }
-                  />
-                )
-              ) : null}
-              <Text
-                className={`${
-                  unseenMsgCount > 0
-                    ? "text-neutral-800 dark:text-neutral-100"
-                    : "text-neutral-600 dark:text-neutral-400"
-                } text-sm font-medium`}
-                numberOfLines={1}
-              >
-                {lastMsg}
-              </Text>
-            </View>
-          </View>
         </View>
-        <View className="flex-col gap-1 items-end justify-start">
-          <Text
-            className={`${
-              unseenMsgCount > 0 ? "text-sky-600" : "text-neutral-500"
-            } text-xs font-medium`}
-          >
-            {conversation.lastMessagedAt
-              ? formatMsgDate(
-                  conversation.lastMessagedAt &&
-                    new Date(conversation.lastMessagedAt)
-                )
-              : null}
-          </Text>
-          {unseenMsgCount > 0 && (
-            <TextBadge
-              color={colors.sky[600]}
-              text={unseenMsgCount?.toString()}
-            />
-          )}
-        </View>
-      </View>
-    </TouchableHighlight>
+      </TouchableHighlight>
+    </>
   );
 }

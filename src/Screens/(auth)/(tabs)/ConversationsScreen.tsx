@@ -15,6 +15,8 @@ import ConversationItem from "@/components/conversation/ConversationItem";
 import pusher from "@/lib/pusher";
 import { PusherEvent } from "@pusher/pusher-websocket-react-native";
 import usePusher from "@/hooks/usePusher";
+import Backdrop from "@/components/Backdrop";
+import ConvOptionsModal from "@/components/modal/ConvOptionsModal";
 
 export default function ConversationsScreen() {
   const { user, isLoaded } = useUser();
@@ -25,7 +27,7 @@ export default function ConversationsScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
-  // const { pusher, isConnected } = usePusher();
+  const [showOptionsModal, setShowOptionsModal] = useState("");
 
   async function loadConversations(isRefreshing = false) {
     try {
@@ -90,14 +92,7 @@ export default function ConversationsScreen() {
   }, [user?.id, pusher]);
 
   useEffect(() => {
-    if (isLoaded && user?.id) {
-      subscribeToPusher();
-    }
-    // return () => {
-    //   if (user?.id) {
-    //     pusher.unsubscribe({ channelName: user.id });
-    //   }
-    // };
+    if (isLoaded && user?.id) subscribeToPusher();
   }, [isLoaded, user?.id, pusher, subscribeToPusher]);
 
   function renderConvList({ item: conv }: { item: MongoConversation }) {
@@ -105,6 +100,7 @@ export default function ConversationsScreen() {
       <ConversationItem
         conversation={conv}
         setConversationList={setConversationList}
+        setShowOptionsModal={setShowOptionsModal}
       />
     );
   }
@@ -114,21 +110,32 @@ export default function ConversationsScreen() {
       {isLoading ? (
         <ActivityIndicator size="large" color={colors.sky[600]} />
       ) : (
-        <FlatList
-          data={conversationList}
-          keyExtractor={(conv) => conv._id}
-          renderItem={renderConvList}
-          refreshing={refreshing}
-          onRefresh={() => loadConversations(true)}
-          ListEmptyComponent={
-            <View className="flex-1 items-center justify-center">
-              <Text className="text-neutral-400 text-sm">
-                You don't have any old chats with anyone. Start one by choosing
-                to chat with your friends
-              </Text>
-            </View>
-          }
-        />
+        <>
+          <FlatList
+            data={conversationList}
+            keyExtractor={(conv) => conv._id}
+            renderItem={renderConvList}
+            refreshing={refreshing}
+            onRefresh={() => loadConversations(true)}
+            ListEmptyComponent={
+              <View className="flex-1 items-center justify-center">
+                <Text className="text-neutral-400 text-sm">
+                  You don't have any old chats with anyone. Start one by
+                  choosing to chat with your friends
+                </Text>
+              </View>
+            }
+          />
+          {showOptionsModal !== "" && (
+            <Backdrop center>
+              <ConvOptionsModal
+                conversationID={showOptionsModal}
+                setShowOptionsModal={setShowOptionsModal}
+                loadConversations={loadConversations}
+              />
+            </Backdrop>
+          )}
+        </>
       )}
       <FriendsFAB />
     </View>
