@@ -17,13 +17,16 @@ import * as Clipboard from "expo-clipboard";
 import { Ionicons } from "@expo/vector-icons";
 import { formatMsgDate } from "@/utility/helpers";
 import axiosInstance from "@/config/axiosInstance";
+import useUnseenMsgCount from "@/hooks/conversations/useUnseenMsgCount";
 
 export default function MessageItem({
   message,
   setMessages,
+  isLastMsg,
 }: {
   message: MongoMessage;
   setMessages: React.Dispatch<React.SetStateAction<MongoMessage[]>>;
+  isLastMsg: boolean;
 }) {
   const isSelf = message.isSelf;
   const [showMenu, setShowMenu] = useState(false);
@@ -90,7 +93,9 @@ export default function MessageItem({
               position: "absolute",
               zIndex: 30,
 
-              top: componentHeight + 3,
+              ...(isLastMsg
+                ? { bottom: componentHeight + 10 }
+                : { top: componentHeight + 3 }),
               ...(isSelf ? { right: 0 } : { left: 0 }),
             }}
           >

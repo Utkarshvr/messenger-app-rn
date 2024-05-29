@@ -7,11 +7,14 @@ import {
 } from "react-native";
 import { useUser } from "@clerk/clerk-expo";
 import FriendsFAB from "@/components/buttons/FriendsFAB";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import MongoConversation from "@/types/mongo/MongoConversation";
 import axiosInstance from "@/config/axiosInstance";
 import colors from "tailwindcss/colors";
 import ConversationItem from "@/components/conversation/ConversationItem";
+import pusher from "@/lib/pusher";
+import { PusherEvent } from "@pusher/pusher-websocket-react-native";
+import usePusher from "@/hooks/usePusher";
 
 export default function ConversationsScreen() {
   const { user, isLoaded } = useUser();
@@ -21,6 +24,8 @@ export default function ConversationsScreen() {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+
+  // const { pusher, isConnected } = usePusher();
 
   async function loadConversations(isRefreshing = false) {
     try {
@@ -41,8 +46,63 @@ export default function ConversationsScreen() {
     loadConversations();
   }, []);
 
+  const subscribeToPusher = useCallback(() => {
+    const PUSHER_CONNECTION_STATE = pusher.connectionState;
+    console.log({ PUSHER_CONNECTION_STATE });
+    if (user?.id) {
+      console.log({ PUSHER_CONNECTION_STATE: pusher.connectionState });
+      pusher
+        .subscribe({
+          channelName: user.id,
+          onEvent: (event: PusherEvent) => {
+            switch (event.eventName) {
+              case "conversation:update":
+                const updatedConv = JSON.parse(event.data);
+                console.log(event.eventName);
+
+                setConversationList((prev) =>
+                  prev.map((conv) => {
+                    if (conv._id === updatedConv._id) {
+                      return {
+                        ...conv,
+                        lastMessage: updatedConv.lastMessage,
+                        lastMessagedAt: updatedConv.lastMessagedAt,
+                      };
+                    } else return conv;
+                  })
+                );
+
+                break;
+              default:
+                break;
+            }
+          },
+        })
+        .then(() =>
+          console.log(` 🛜🛜🛜 ${user.username} has subscribed to ${user.id} 🛜🛜🛜`)
+        )
+        .catch((err) => console.log("Error while subscribing: ", err));
+    }
+  }, [user?.id, pusher]);
+
+  useEffect(() => {
+    if (isLoaded && user?.id) {
+      subscribeToPusher();
+    }
+    // return () => {
+    //   if (user?.id) {
+    //     pusher.unsubscribe({ channelName: user.id });
+    //   }
+    // };
+  }, [isLoaded, user?.id, pusher, subscribeToPusher]);
+
   function renderConvList({ item: conv }: { item: MongoConversation }) {
-    return <ConversationItem conversation={conv} />;
+    return (
+      <ConversationItem
+        conversation={conv}
+        setConversationList={setConversationList}
+      />
+    );
   }
 
   return (

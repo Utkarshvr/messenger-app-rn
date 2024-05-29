@@ -64,6 +64,7 @@ export default function _layout() {
               color={color}
             />
           ),
+          unmountOnBlur: true,
         }}
       />
       <Tabs.Screen

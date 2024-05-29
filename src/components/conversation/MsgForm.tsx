@@ -4,6 +4,7 @@ import {
   TextInput,
   TouchableHighlight,
   View,
+  useColorScheme,
 } from "react-native";
 import colors from "tailwindcss/colors";
 import { Ionicons } from "@expo/vector-icons";
@@ -21,6 +22,7 @@ export default function MsgForm({
   conversationID: string;
 }) {
   const { user } = useUser();
+  const theme = useColorScheme();
   const [text, setText] = useState("");
 
   const sendMsg = async () => {
@@ -55,17 +57,24 @@ export default function MsgForm({
         {text.length === 0 && (
           <TouchableHighlight
             className="rounded-full p-2 items-center justify-center"
-            underlayColor={colors.neutral[900]}
-            // onPress={sendMsg}
+            underlayColor={
+              theme === "dark" ? colors.neutral[700] : colors.neutral[200]
+            }
           >
-            <Ionicons name="image" size={24} color={colors.white} />
+            <Ionicons
+              name="image"
+              size={24}
+              color={
+                theme === "dark" ? colors.neutral[100] : colors.neutral[800]
+              }
+            />
           </TouchableHighlight>
         )}
 
         <TextInput
           autoCapitalize="none"
           keyboardType="default"
-          className="text-base text-neutral-100 max-h-28 flex-1 border border-neutral-800 px-4 py-2 rounded-3xl"
+          className="text-base text-neutral-900 dark:text-neutral-100 max-h-28 flex-1 border border-neutral-300 dark:border-neutral-800 px-4 py-2 rounded-3xl"
           placeholderTextColor={colors.neutral[400]}
           value={text}
           placeholder="Message..."
@@ -76,7 +85,9 @@ export default function MsgForm({
 
       <TouchableHighlight
         className={`rounded-full p-2 ${
-          text.length === 0 ? "bg-neutral-800" : "bg-sky-600"
+          text.length === 0
+            ? "bg-neutral-100 dark:bg-neutral-800"
+            : "bg-sky-600"
         } items-center justify-center`}
         underlayColor={colors.sky[900]}
         onPress={sendMsg}
@@ -85,7 +96,13 @@ export default function MsgForm({
         <Ionicons
           name="send"
           size={24}
-          color={text.length === 0 ? colors.neutral[500] : colors.white}
+          color={
+            text.length === 0
+              ? theme === "dark"
+                ? colors.neutral[500]
+                : colors.neutral[300]
+              : colors.neutral[100]
+          }
         />
       </TouchableHighlight>
     </View>

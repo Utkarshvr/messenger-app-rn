@@ -6,7 +6,6 @@ export default function useUnseenMsgCount(conversationID: string) {
 
   async function getUnseenMsgCount() {
     try {
-      console.log("GETTING UNSEEN COUNT");
       const { data } = await axiosInstance.get(
         `/conversations/${conversationID}/unseen-msg-count`
       );
@@ -20,7 +19,7 @@ export default function useUnseenMsgCount(conversationID: string) {
 
   useEffect(() => {
     getUnseenMsgCount();
-  }, []);
+  }, [conversationID]);
 
-  return msgCount;
+  return { msgCount, setMsgCount, getUnseenMsgCount };
 }

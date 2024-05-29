@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { Image, Text, TouchableHighlight, View } from "react-native";
+import {
+  Image,
+  Text,
+  TouchableHighlight,
+  View,
+  useColorScheme,
+} from "react-native";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import useOtherUsers from "@/hooks/conversations/useOtherUsers";
 import colors from "tailwindcss/colors";
@@ -11,6 +17,7 @@ import MsgForm from "@/components/conversation/MsgForm";
 
 export default function ConversationScreen() {
   const { conversationID } = useLocalSearchParams();
+  const theme = useColorScheme();
   const navigation = useNavigation();
 
   if (typeof conversationID !== "string") {
@@ -31,13 +38,17 @@ export default function ConversationScreen() {
               <TouchableHighlight
                 className="rounded-full p-2"
                 activeOpacity={0.7}
-                underlayColor={colors.neutral[700]}
+                underlayColor={
+                  theme === "dark" ? colors.neutral[700] : colors.neutral[200]
+                }
                 onPress={() => router.back()}
               >
                 <Ionicons
                   name="arrow-back"
                   size={24}
-                  color={colors.neutral[100]}
+                  color={
+                    theme === "dark" ? colors.neutral[100] : colors.neutral[800]
+                  }
                 />
               </TouchableHighlight>
             )}
@@ -61,13 +72,17 @@ export default function ConversationScreen() {
           <TouchableHighlight
             className="rounded-full p-2"
             activeOpacity={0.7}
-            underlayColor={colors.neutral[700]}
+            underlayColor={
+              theme === "dark" ? colors.neutral[700] : colors.neutral[200]
+            }
             // onPress={() => router.back()}
           >
             <Entypo
               name="dots-three-vertical"
               size={20}
-              color={colors.neutral[100]}
+              color={
+                theme === "dark" ? colors.neutral[100] : colors.neutral[800]
+              }
             />
           </TouchableHighlight>
         ),
@@ -83,6 +98,7 @@ export default function ConversationScreen() {
           messages={messages}
           conversationID={conversationID}
           setMessages={setMessages}
+          otherUsers={otherUsers}
         />
       </View>
       <MsgForm setMessages={setMessages} conversationID={conversationID} />
