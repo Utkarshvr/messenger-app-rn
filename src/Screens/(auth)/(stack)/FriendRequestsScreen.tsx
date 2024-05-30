@@ -148,7 +148,7 @@ export default function FriendRequestsScreen() {
   }: {
     item: MongoFriendRequest;
   }) => (
-    <View key={fr._id} className="flex-row justify-between items-center">
+    <View key={fr._id} className="flex-row justify-between items-center mb-3">
       <View className="gap-2 flex-row items-center">
         <View className="relative">
           <Image
@@ -209,7 +209,7 @@ export default function FriendRequestsScreen() {
   );
 
   const renderSentRequest = ({ item: fr }: { item: MongoFriendRequest }) => (
-    <View key={fr._id} className="flex-row justify-between items-center">
+    <View key={fr._id} className="flex-row justify-between items-center mb-3">
       <View className="gap-2 flex-row items-center">
         <Image
           source={{ uri: fr?.recipient?.picture }}
@@ -247,6 +247,8 @@ export default function FriendRequestsScreen() {
       </View>
     </View>
   );
+
+  console.log({ friendRequests, friendRequestsSent });
 
   return (
     <>

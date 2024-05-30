@@ -33,8 +33,8 @@ export default function AddFriendsScreen() {
     { user_id: string; req_id: string }[]
   >([]);
 
-  const [isSendingReq, setIsSendingReq] = useState(false);
-  const [isCancellingReq, setIsCancellingReq] = useState(false);
+  const [isSendingReq, setIsSendingReq] = useState("");
+  const [isCancellingReq, setIsCancellingReq] = useState("");
 
   async function loadsuggestedUsers() {
     try {
@@ -50,7 +50,7 @@ export default function AddFriendsScreen() {
 
   async function sendReq(id: string) {
     try {
-      setIsSendingReq(true);
+      setIsSendingReq(id);
       const { data } = await axiosInstance.post(`/friend-requests/${id}`);
       setRequestedUsers((prev) => [
         ...prev,
@@ -68,13 +68,13 @@ export default function AddFriendsScreen() {
         actions: [{ onPress: () => setError(null), text: "Got it" }],
       });
     } finally {
-      setIsSendingReq(false);
+      setIsSendingReq("");
     }
   }
 
   async function cancelReq(req_id: string, user_id: string) {
     try {
-      setIsCancellingReq(true);
+      setIsCancellingReq(user_id);
       await axiosInstance.put(`/friend-requests/${req_id}/cancel`);
       setRequestedUsers((prev) =>
         prev.filter((req_user) => req_user.user_id !== user_id)
@@ -90,7 +90,7 @@ export default function AddFriendsScreen() {
         actions: [{ onPress: () => setError(null), text: "Got it" }],
       });
     } finally {
-      setIsCancellingReq(false);
+      setIsCancellingReq("");
     }
   }
 
@@ -102,9 +102,9 @@ export default function AddFriendsScreen() {
     <>
       <View className="flex-1 bg-neutral-100 dark:bg-neutral-950 p-4">
         <View className="w-full gap-2 mb-4">
-          <Text className="text-neutral-800 dark:text-neutral-200 text-base font-bold">
+          {/* <Text className="text-neutral-800 dark:text-neutral-200 text-base font-bold">
             Add Friends
-          </Text>
+          </Text> */}
 
           {/* <View className="mb-4">
             <TextInput
@@ -126,7 +126,7 @@ export default function AddFriendsScreen() {
             {suggestedUsers.map((user) => (
               <View
                 key={user._id}
-                className="flex-row justify-between items-center"
+                className="flex-row justify-between items-center mb-4"
               >
                 <View className="gap-2 flex-row items-center">
                   <Image
@@ -168,7 +168,10 @@ export default function AddFriendsScreen() {
                         )
                       }
                     >
-                      {isCancellingReq ? (
+                      {isCancellingReq ===
+                      requestedUsers.find(
+                        (req_user) => req_user.user_id === user._id
+                      )?.user_id ? (
                         <ActivityIndicator color={colors.white} />
                       ) : (
                         <Text className="text-neutral-100 font-bold">
@@ -183,7 +186,7 @@ export default function AddFriendsScreen() {
                       underlayColor={colors.sky[900]}
                       onPress={() => sendReq(user._id)}
                     >
-                      {isSendingReq ? (
+                      {isSendingReq === user._id ? (
                         <ActivityIndicator color={colors.sky[500]} />
                       ) : (
                         <Text className="text-neutral-100 font-bold">Add</Text>

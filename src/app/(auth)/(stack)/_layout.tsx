@@ -30,6 +30,21 @@ export default function layout() {
         options={{ headerTitle: "Edit Profile" }}
       />
       <Stack.Screen
+        key={"add-friends"}
+        name="add-friends"
+        options={{ headerTitle: "Add Friends" }}
+      />
+      <Stack.Screen
+        key={"friend-requests"}
+        name="friend-requests"
+        options={{ headerTitle: "Friend Requests" }}
+      />
+      <Stack.Screen
+        key={"friends-list"}
+        name="friends-list"
+        options={{ headerTitle: "Your Friends" }}
+      />
+      <Stack.Screen
         key={"(edit-profile)"}
         name="(edit-profile)"
         options={{ headerShown: false }}
