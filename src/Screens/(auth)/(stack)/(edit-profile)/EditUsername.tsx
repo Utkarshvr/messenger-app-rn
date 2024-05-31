@@ -12,6 +12,7 @@ import {
   TextInput,
   ActivityIndicator,
   ToastAndroid,
+  useColorScheme,
 } from "react-native";
 import colors from "tailwindcss/colors";
 
@@ -27,7 +28,7 @@ export default function EditUsername() {
     actions: { onPress: () => void; text: string }[];
   }>(null);
 
-  console.log({ username });
+  const theme = useColorScheme();
 
   const closeModal = () => setError(null);
 
@@ -90,17 +91,19 @@ export default function EditUsername() {
     <>
       <View className="flex-1 items-center bg-neutral-100 dark:bg-neutral-950 p-4">
         <View className="w-full flex-col">
-          <Text className="text-xs text-neutral-400">Username</Text>
+          <Text className="text-xs text-neutral-500 dark:text-neutral-400">
+            Username
+          </Text>
           <TextInput
             autoCapitalize="none"
             keyboardType="default"
-            className="text-base border-b border-neutral-200 text-neutral-100 w-full p-1 rounded-lg"
+            className="text-base border-b border-neutral-300 dark:border-neutral-200 text-neutral-900 dark:text-neutral-100 w-full p-1 rounded-lg"
             placeholderTextColor={colors.neutral[400]}
             value={username || ""}
             placeholder="Username"
             onChangeText={(txt) => setUsername(txt)}
           />
-          <Text className="text-xs mt-2 text-neutral-400">
+          <Text className="text-xs mt-2 text-neutral-500 dark:text-neutral-400">
             You'll be able to change your username once in 14 days only.
           </Text>
         </View>

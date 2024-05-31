@@ -16,7 +16,7 @@ export default function Modal({
   return (
     <View
       className={`flex ${
-        colorScheme === "dark" ? "bg-neutral-800" : "bg-neutral-400"
+        colorScheme === "dark" ? "bg-neutral-800" : "bg-neutral-100"
       } max-w-xs rounded-lg`}
     >
       <View className="p-6 items-center justify-center">
@@ -34,8 +34,10 @@ export default function Modal({
         {actions.map((action) => (
           <TouchableHighlight
             key={action.text}
-            activeOpacity={0.6}
-            underlayColor={colors.neutral[700]}
+            activeOpacity={1}
+            underlayColor={
+              colorScheme === "dark" ? colors.neutral[700] : colors.neutral[200]
+            }
             className="w-full p-2 rounded-b-lg"
             onPress={action.onPress}
           >

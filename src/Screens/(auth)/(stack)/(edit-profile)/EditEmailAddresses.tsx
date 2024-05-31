@@ -14,6 +14,7 @@ import {
   Button,
   TouchableOpacity,
   ToastAndroid,
+  useColorScheme,
 } from "react-native";
 import colors from "tailwindcss/colors";
 import EmailEditMenu from "@/components/EmailEditMenu";
@@ -22,6 +23,8 @@ import { SortEmailAddresses } from "@/utility/helpers";
 
 export default function EditEmailAddresses() {
   const { user } = useUser();
+
+  const theme = useColorScheme();
 
   const [emailAddress, setEmailAddress] = useState("");
   const [isAddingEmail, setIsAddingEmail] = useState(false);
@@ -209,7 +212,7 @@ export default function EditEmailAddresses() {
       );
     }
   }, [user?.emailAddresses]);
-  console.log({ verificationTime, isEmailVerificationPending });
+
   return (
     <>
       <View className="flex-1 bg-neutral-100 dark:bg-neutral-950">
@@ -219,32 +222,42 @@ export default function EditEmailAddresses() {
               key={email.id}
               className="mb-4 w-full flex-row items-center justify-between"
             >
-              <View className="flex-row gap-1 items-center justify-between">
-                <Text className="text-base text-neutral-200 m-auto">
+              <View className="flex-[0.97] flex-row gap-1 items-center justify-between">
+                <Text
+                  numberOfLines={1}
+                  className="text-sm text-neutral-700 dark:text-neutral-200 m-auto"
+                >
                   {email.emailAddress}
                 </Text>
+              </View>
+
+              <View className="flex-row">
                 {email.emailAddress ===
                   user?.primaryEmailAddress?.emailAddress && (
-                  <Badge text="Primary" dark />
+                  <Badge text="Primary" dark={theme === "dark"} />
                 )}
                 {email.verification.status !== "verified" && (
-                  <Badge text="Unverified" dark />
+                  <Badge text="Unverified" dark={theme === "dark"} />
                 )}
+                <View className="ml-2">
+                  <EmailEditMenu
+                    email={email}
+                    primaryEmailAddress={
+                      user?.primaryEmailAddress?.emailAddress || ""
+                    }
+                    menuVisible={menuVisible}
+                    toggleMenu={toggleMenu}
+                    closeMenu={closeMenu}
+                    error={error}
+                    setError={setError}
+                    setIsEmailVerificationPending={
+                      setIsEmailVerificationPending
+                    }
+                    setVerificationEmail={setVerificationEmail}
+                    setVerificationTime={setVerificationTime}
+                  />
+                </View>
               </View>
-              <EmailEditMenu
-                email={email}
-                primaryEmailAddress={
-                  user?.primaryEmailAddress?.emailAddress || ""
-                }
-                menuVisible={menuVisible}
-                toggleMenu={toggleMenu}
-                closeMenu={closeMenu}
-                error={error}
-                setError={setError}
-                setIsEmailVerificationPending={setIsEmailVerificationPending}
-                setVerificationEmail={setVerificationEmail}
-                setVerificationTime={setVerificationTime}
-              />
             </View>
           ))}
         </View>
@@ -255,8 +268,10 @@ export default function EditEmailAddresses() {
           <View className="p-4">
             <TouchableHighlight
               className="w-fit p-2 flex-row items-center rounded-md"
-              activeOpacity={0.6}
-              underlayColor={colors.neutral[900]}
+              activeOpacity={1}
+              underlayColor={
+                theme === "dark" ? colors.neutral[900] : colors.neutral[200]
+              }
               onPress={() => setIsAddingEmail(true)}
             >
               <View className="w-fit flex-row items-center justify-center gap-2">
@@ -264,7 +279,9 @@ export default function EditEmailAddresses() {
                   className="mt-auto"
                   name="email-plus-outline"
                   size={18}
-                  color={colors.neutral[100]}
+                  color={
+                    theme === "dark" ? colors.neutral[100] : colors.neutral[900]
+                  }
                 />
                 <Text className="m-auto w-max text-neutral-950 dark:text-neutral-100 text-base">
                   Add email address
@@ -290,8 +307,10 @@ export default function EditEmailAddresses() {
               <TextInput
                 autoCapitalize="none"
                 keyboardType="email-address"
-                className="text-base border-b border-neutral-200 text-neutral-100 w-full rounded-lg"
-                placeholderTextColor={colors.neutral[400]}
+                className="text-base border-b border-neutral-400 dark:border-neutral-200 text-neutral-900 dark:text-neutral-100 w-full rounded-lg"
+                placeholderTextColor={
+                  theme === "dark" ? colors.neutral[400] : colors.neutral[500]
+                }
                 value={emailAddress || ""}
                 placeholder="abc@domain.com"
                 onChangeText={(txt) => setEmailAddress(txt)}
@@ -301,8 +320,10 @@ export default function EditEmailAddresses() {
             <View className="flex-row gap-2 justify-end items-center">
               <TouchableHighlight
                 className="w-fit p-2 flex-row items-center rounded-md"
-                activeOpacity={0.6}
-                underlayColor={colors.neutral[900]}
+                activeOpacity={1}
+                underlayColor={
+                  theme === "dark" ? colors.neutral[900] : colors.neutral[200]
+                }
                 onPress={() => setIsAddingEmail(false)}
               >
                 <Text className="m-auto w-max text-neutral-700 dark:text-neutral-300 text-sm">
@@ -311,14 +332,14 @@ export default function EditEmailAddresses() {
               </TouchableHighlight>
               <TouchableHighlight
                 className="w-fit p-2 flex-row items-center rounded-md bg-sky-600"
-                activeOpacity={0.6}
+                activeOpacity={1}
                 underlayColor={colors.sky[900]}
                 onPress={onAddEmail}
               >
                 {isCreatingEmail ? (
                   <ActivityIndicator color={colors.white} />
                 ) : (
-                  <Text className="m-auto w-max text-neutral-800 dark:text-neutral-200 text-sm font-bold">
+                  <Text className="m-auto w-max text-neutral-100 text-sm font-bold">
                     Add
                   </Text>
                 )}

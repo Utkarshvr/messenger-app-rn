@@ -6,6 +6,7 @@ import {
   ToastAndroid,
   TouchableHighlight,
   View,
+  useColorScheme,
 } from "react-native";
 import colors from "tailwindcss/colors";
 import { EmailAddressResource, ClerkAPIError } from "@clerk/types";
@@ -53,6 +54,7 @@ export default function EmailEditMenu({
   >;
 }) {
   const { user } = useUser();
+  const theme = useColorScheme();
 
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -145,19 +147,21 @@ export default function EmailEditMenu({
         <TouchableHighlight
           className="p-1 flex flex-row rounded-full justify-center items-center z-10"
           activeOpacity={0.6}
-          underlayColor={colors.neutral[900]}
+          underlayColor={
+            theme === "dark" ? colors.neutral[900] : colors.neutral[200]
+          }
           onPress={() => toggleMenu(email.id)}
         >
           <Entypo
             name="dots-three-horizontal"
             size={20}
-            color={colors.neutral[300]}
+            color={theme === "dark" ? colors.neutral[300] : colors.neutral[500]}
           />
         </TouchableHighlight>
 
         {menuVisible === email.id && (
           <View
-            className={`w-[160px] absolute top-5 right-0 flex bg-neutral-400 dark:bg-neutral-800 rounded-lg`}
+            className={`w-[160px] absolute top-5 right-0 flex bg-neutral-200 dark:bg-neutral-800 rounded-lg`}
             style={{ zIndex: 10000000000000 }}
           >
             {email.verification.status !== "verified"

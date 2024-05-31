@@ -12,6 +12,7 @@ import {
   TextInput,
   ActivityIndicator,
   ToastAndroid,
+  useColorScheme,
 } from "react-native";
 import colors from "tailwindcss/colors";
 
@@ -19,6 +20,7 @@ export default function EditPassword() {
   const navigation = useNavigation();
 
   const { user } = useUser();
+  const theme = useColorScheme();
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -119,8 +121,10 @@ export default function EditPassword() {
           {/* <Text className="text-xs text-neutral-400">Current Password</Text> */}
           <TextInput
             autoCapitalize="none"
-            className="text-base border-b border-neutral-200 text-neutral-100 w-full p-1 rounded-lg"
-            placeholderTextColor={colors.neutral[400]}
+            className="text-base border-b border-neutral-400 dark:border-neutral-200 text-neutral-900 dark:text-neutral-100 w-full p-1 rounded-lg"
+            placeholderTextColor={
+              theme === "dark" ? colors.neutral[400] : colors.neutral[500]
+            }
             value={currentPassword || ""}
             placeholder="Current Password"
             onChangeText={(txt) => setCurrentPassword(txt)}
@@ -132,8 +136,10 @@ export default function EditPassword() {
           <TextInput
             autoCapitalize="none"
             secureTextEntry={true}
-            className="text-base border-b border-neutral-200 text-neutral-100 w-full p-1 rounded-lg"
-            placeholderTextColor={colors.neutral[400]}
+            className="text-base border-b border-neutral-400 dark:border-neutral-200 text-neutral-900 dark:text-neutral-100 w-full p-1 rounded-lg"
+            placeholderTextColor={
+              theme === "dark" ? colors.neutral[400] : colors.neutral[500]
+            }
             value={newPassword || ""}
             placeholder="New Password"
             onChangeText={(txt) => setNewPassword(txt)}
@@ -144,8 +150,10 @@ export default function EditPassword() {
           <TextInput
             autoCapitalize="none"
             secureTextEntry={true}
-            className="text-base border-b border-neutral-200 text-neutral-100 w-full p-1 rounded-lg"
-            placeholderTextColor={colors.neutral[400]}
+            className="text-base border-b border-neutral-400 dark:border-neutral-200 text-neutral-900 dark:text-neutral-100 w-full p-1 rounded-lg"
+            placeholderTextColor={
+              theme === "dark" ? colors.neutral[400] : colors.neutral[500]
+            }
             value={confirmPassword || ""}
             placeholder="Confirm Password"
             onChangeText={(txt) => setConfirmPassword(txt)}
@@ -158,10 +166,10 @@ export default function EditPassword() {
             color={signOutOfOtherSessions ? colors.sky[600] : undefined}
           />
           <View className="flex-col gap-1">
-            <Text className="text-sm text-neutral-100 leading-4">
+            <Text className="text-sm text-neutral-900 dark:text-neutral-100 leading-4">
               Sign out of all other devices
             </Text>
-            <Text className="text-xs text-neutral-300 font-thin">
+            <Text className="text-xs text-neutral-500 dark:text-neutral-300 font-thin">
               It is recommended to sign out of all other devices which may have
               used your old password
             </Text>

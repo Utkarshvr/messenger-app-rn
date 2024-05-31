@@ -18,10 +18,14 @@ export default function _layout() {
             <TouchableHighlight
               className="rounded-full p-1 mr-4"
               activeOpacity={0.7}
-              underlayColor={colors.neutral[700]}
+              underlayColor={
+                colorScheme === "dark"
+                  ? colors.neutral[700]
+                  : colors.neutral[200]
+              }
               onPress={() => router.back()}
             >
-              <Ionicons name="close" size={24} color={colors.neutral[100]} />
+              <Ionicons name="close" size={24} color={textColor} />
             </TouchableHighlight>
           ),
 

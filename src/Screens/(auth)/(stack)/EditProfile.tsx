@@ -4,6 +4,7 @@ import {
   TextInput,
   TouchableHighlight,
   View,
+  useColorScheme,
 } from "react-native";
 import { useUser } from "@clerk/clerk-expo";
 import colors from "tailwindcss/colors";
@@ -15,6 +16,7 @@ import EditProfileImg from "@/components/EditProfileImg";
 
 export default function EditProfile() {
   const { user } = useUser();
+  const theme = useColorScheme();
 
   const [userDetails, setUserDetails] = useState({
     username: "",
@@ -31,12 +33,14 @@ export default function EditProfile() {
       <EditProfileImg />
       <View className="w-full gap-3 flex-col p-3">
         <View className="w-full flex-col">
-          <Text className="text-xs text-neutral-400">Username</Text>
+          <Text className="text-xs text-neutral-500 dark:text-neutral-400">
+            Username
+          </Text>
           <TextInput
             onPress={() => router.push("/(edit-profile)/username")}
             autoCapitalize="none"
             keyboardType="default"
-            className="text-base border-b border-neutral-200 text-neutral-100 w-full p-1 rounded-lg"
+            className="text-base border-b border-neutral-300 dark:border-neutral-200 text-neutral-900 dark:text-neutral-100 w-full p-1 rounded-lg"
             placeholderTextColor={colors.neutral[400]}
             value={userDetails.username}
             placeholder="Username"
@@ -50,8 +54,10 @@ export default function EditProfile() {
       <View className="items-center justify-center">
         <TouchableHighlight
           className="w-full p-4 flex flex-row items-center"
-          activeOpacity={0.6}
-          underlayColor={colors.neutral[900]}
+          activeOpacity={1}
+          underlayColor={
+            theme === "dark" ? colors.neutral[900] : colors.neutral[200]
+          }
           onPress={() => router.push("/(edit-profile)/email-addresses")}
         >
           <View className="flex flex-row items-center justify-center gap-2">
@@ -59,7 +65,9 @@ export default function EditProfile() {
               className="mt-auto"
               name="email-edit-outline"
               size={16}
-              color={colors.neutral[100]}
+              color={
+                theme === "dark" ? colors.neutral[100] : colors.neutral[900]
+              }
             />
             <Text className="m-auto text-neutral-950 dark:text-neutral-100 text-sm">
               Manage email addresses
@@ -69,8 +77,10 @@ export default function EditProfile() {
         <Divider color={colors.neutral[500]} width={4} />
         <TouchableHighlight
           className="w-full p-4 flex flex-row items-center"
-          activeOpacity={0.6}
-          underlayColor={colors.neutral[900]}
+          activeOpacity={1}
+          underlayColor={
+            theme === "dark" ? colors.neutral[900] : colors.neutral[200]
+          }
           onPress={() => router.push("/(edit-profile)/password")}
         >
           <View className="flex flex-row items-center justify-center gap-2">
@@ -78,7 +88,9 @@ export default function EditProfile() {
               className="mt-auto"
               name="key-outline"
               size={16}
-              color={colors.neutral[100]}
+              color={
+                theme === "dark" ? colors.neutral[100] : colors.neutral[900]
+              }
             />
             <Text className="m-auto text-neutral-950 dark:text-neutral-100 text-sm">
               Change Password

@@ -21,7 +21,7 @@ export default function layout() {
 
         headerTitleStyle: { color: textColor },
 
-        headerTintColor: "white",
+        headerTintColor: textColor,
       }}
     >
       <Stack.Screen
